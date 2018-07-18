@@ -2,10 +2,10 @@
     <string name="fb_app_id" translatable="false">180276049110543</string>
     <string name="owner_email" translatable="false">app@swipr.dk</string>
 
-    <string name="app_name">Swibbid</string>
+    <string name="app_name">Swipr</string>
     <string name="login_with_facebook">Login with Facebook</string>
     <string name="create_account">Create account</string>
-    <string name="login_with_swipr">Login with Swibbid</string>
+    <string name="login_with_swipr">Login with Swipr</string>
     <string name="let_me_in"><u>I want to see what\'s inside, just let me in for now</u></string>
     <string name="warning">Warning</string>
     <string name="error_unknown">An error occurred. Please try again.</string>

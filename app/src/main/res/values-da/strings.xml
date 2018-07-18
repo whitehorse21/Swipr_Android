@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Swibbid</string>
+    <string name="app_name">Swipr</string>
     <string name="login_with_facebook">Login med Facebook</string>
     <string name="create_account">Create account</string>
     <string name="login_with_swipr">Login med swipr</string>
