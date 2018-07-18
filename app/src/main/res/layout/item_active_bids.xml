@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_gravity="bottom|end"
+        android:background="@color/colorAccent"
+        android:clickable="true"
+        android:foreground="@drawable/selector_image_light"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_profile_delete" />
+
+    <com.wunderlist.slidinglayer.SlidingLayer
+        android:id="@+id/swipeable"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:changeStateOnTap="true"
+        app:stickTo="left">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/white">
+
+            <FrameLayout
+                android:id="@+id/alphable"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="96dp"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="96dp"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@android:color/white"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:id="@+id/brand"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="center_horizontal"
+                            android:textColor="@color/textSecondary"
+                            android:textSize="@dimen/text_xsmall" />
+
+                        <TextView
+                            android:id="@+id/initial_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="@color/textSecondary"
+                            android:textSize="@dimen/text_xsmall" />
+
+                        <TextView
+                            android:id="@+id/bid"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/text_regular" />
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@color/colorPrimary"
+                        android:gravity="center_vertical">
+
+                        <dk.techtify.swipr.view.CounterTextView
+                            android:id="@+id/time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/text_regular" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+            </FrameLayout>
+        </FrameLayout>
+    </com.wunderlist.slidinglayer.SlidingLayer>
+</FrameLayout>

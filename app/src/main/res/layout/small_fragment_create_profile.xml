@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:paddingTop="32dp"
+                android:text="@string/create_profile"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_xxlarge" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/photo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/selector_image_light"
+                android:clickable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_profile_empty"
+                app:riv_border_color="@color/colorPrimary"
+                app:riv_border_width="2dp"
+                app:riv_oval="true" />
+
+            <EditText
+                android:id="@+id/first_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bck_editable_light"
+                android:hint="@string/first_name"
+                android:inputType="textCapWords"
+                android:maxLength="64"
+                android:paddingBottom="14dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="14dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/textHintTransculent"
+                android:textSize="@dimen/text_regular" />
+
+            <EditText
+                android:id="@+id/last_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bck_editable_light"
+                android:hint="@string/last_name"
+                android:inputType="textCapWords"
+                android:maxLength="64"
+                android:paddingBottom="14dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="14dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/textHintTransculent"
+                android:textSize="@dimen/text_regular" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bck_editable_light"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:maxLength="128"
+                android:paddingBottom="14dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="14dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/textHintTransculent"
+                android:textSize="@dimen/text_regular" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bck_editable_light"
+                android:hint="@string/password"
+                android:maxLength="64"
+                android:paddingBottom="14dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="14dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/textHintTransculent"
+                android:textSize="@dimen/text_regular" />
+
+            <dk.techtify.swipr.view.GenderSelectorView
+                android:id="@+id/gender"
+                android:layout_width="match_parent"
+                android:layout_height="64dp" />
+
+            <Button
+                android:id="@+id/next"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bck_btn_create_account"
+                android:fontFamily="sans-serif-light"
+                android:stateListAnimator="@null"
+                android:text="@string/continue_registration"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_medium" />
+
+            <TextView
+                android:id="@+id/terms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="6dp"
+                android:clickable="true"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center_horizontal"
+                android:text="@string/by_pressing_terms"
+                android:textColor="@color/selector_text_white"
+                android:textSize="@dimen/text_xsmall" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/selector_image_light"
+        android:padding="8dp"
+        android:src="@drawable/ic_arrow_back" />
+
+</FrameLayout>

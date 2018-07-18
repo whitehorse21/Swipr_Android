@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="36dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/bck_dialog_seller_buyer"
+        android:elevation="12dp">
+
+        <dk.techtify.swipr.view.HammerView
+            android:id="@+id/hammer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="72dp"
+            android:background="@color/colorPrimary">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/bid_bg_00000" />
+
+            <!--<android.support.v4.view.ViewPager-->
+            <!--android:id="@+id/finger_swipe"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="140dp"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:overScrollMode="never" />-->
+        </dk.techtify.swipr.view.HammerView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/plus_member"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_store_plus_member"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/seller_name"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="center"
+                android:paddingEnd="?attr/actionBarSize"
+                android:paddingStart="?attr/actionBarSize"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_large" />
+
+            <dk.techtify.swipr.view.RatingBar
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="-4dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorPrimary" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="58dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:id="@+id/product_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bck_incoming_bid_product_name"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="center"
+                        android:padding="4dp"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_xsmall" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1px"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/inc_shipping"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bck_incoming_bid_shipping"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="center"
+                        android:padding="4dp"
+                        android:text="@string/include_shipping"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_xsmall" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="start|bottom"
+                        android:paddingBottom="58dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_small" />
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/seller_photo"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/bck_store_user_photo"
+                        android:scaleType="centerCrop"
+                        app:riv_border_color="@color/colorPrimary"
+                        app:riv_border_width="0dp"
+                        app:riv_oval="true" />
+
+                    <TextView
+                        android:id="@+id/created"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="end|bottom"
+                        android:paddingBottom="58dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_small" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/text_title1" />
+
+                    <TextView
+                        android:id="@+id/message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:clickable="true"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-light"
+                        android:maxLines="3"
+                        android:paddingLeft="24dp"
+                        android:paddingRight="24dp"
+                        android:textColor="@color/selector_text_primary_secondary"
+                        android:textSize="@dimen/text_small"
+                        android:visibility="gone" />
+
+                    <!--<FrameLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="1">-->
+
+                    <!--<ImageView-->
+                    <!--android:id="@+id/hammer"-->
+                    <!--android:layout_width="140dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:layout_marginLeft="24dp"-->
+                    <!--android:adjustViewBounds="true"-->
+                    <!--android:clickable="true"-->
+                    <!--android:scaleType="centerInside"-->
+                    <!--android:src="@drawable/ic_hammer" />-->
+                    <!--</FrameLayout>-->
+                </LinearLayout>
+
+                <com.wunderlist.slidinglayer.SlidingLayer
+                    android:id="@+id/sliding"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:changeStateOnTap="false"
+                    app:stickTo="bottom">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/white"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/attach_message_2"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/text_xxlarge" />
+
+                        <EditText
+                            android:id="@+id/attached_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="top|start"
+                            android:hint="@string/text_goes_here"
+                            android:inputType="textCapSentences|textMultiLine"
+                            android:maxLength="1024"
+                            android:paddingLeft="24dp"
+                            android:paddingRight="24dp"
+                            android:paddingTop="12dp"
+                            android:textColor="@color/textPrimary"
+                            android:textColorHint="@color/textHintLight"
+                            android:textSize="@dimen/text_small" />
+
+                    </LinearLayout>
+
+                </com.wunderlist.slidinglayer.SlidingLayer>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/decline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:paddingBottom="24dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/decline"
+                    android:textAllCaps="true"
+                    android:textColor="@color/selector_text_accent_light"
+                    android:textSize="@dimen/text_regular" />
+
+                <LinearLayout
+                    android:id="@+id/attach_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="0.8"
+                        android:text="@string/attach_message"
+                        android:textColor="@color/selector_text_secondary_hint"
+                        android:textSize="@dimen/text_xxsmall" />
+
+                    <ImageView
+                        android:id="@+id/attach_message_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:rotation="270"
+                        android:src="@drawable/ic_my_profile_arrow" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="8dp"
+            android:background="@drawable/selector_image_light"
+            android:padding="8dp"
+            android:rotation="180"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@android:color/white"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_margin="8dp"
+            android:background="@drawable/selector_image_light"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@android:color/white"
+            android:visibility="invisible" />
+    </FrameLayout>
+</FrameLayout>

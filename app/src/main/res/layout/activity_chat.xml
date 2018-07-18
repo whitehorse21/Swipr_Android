@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <include
+        layout="@layout/action_main"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="34dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:overScrollMode="never" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp">
+
+        <EditText
+            android:id="@+id/editable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bck_editable_chat"
+            android:fontFamily="sans-serif-light"
+            android:imeOptions="actionSend"
+            android:includeFontPadding="false"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLength="1024"
+            android:paddingBottom="16dp"
+            android:paddingEnd="56dp"
+            android:paddingStart="24dp"
+            android:paddingTop="16dp"
+            android:textColor="@color/textPrimary"
+            android:textColorHint="@color/textHintLight"
+            android:textSize="@dimen/text_regular" />
+
+        <ImageButton
+            android:id="@+id/send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:paddingTop="1dp"
+            android:src="@drawable/ic_chat_send_btn" />
+    </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="49.5dp"
+        android:indeterminate="true"
+        android:visibility="invisible" />
+</FrameLayout>

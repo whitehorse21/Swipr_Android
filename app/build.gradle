@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'realm-android'
+
+android {
+    signingConfigs {
+        debug {
+            keyAlias 'swipr'
+            keyPassword '123456'
+            storeFile file('../key.jks')
+            storePassword '123456'
+        }
+    }
+    compileSdkVersion 25
+    buildToolsVersion '27.0.3'
+    defaultConfig {
+        applicationId "dk.techtify.swipr"
+        minSdkVersion 17
+        targetSdkVersion 25
+        versionCode 6
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [onesignal_app_id               : "c93db72e-f062-43b1-b406-e33d250bc5ee",
+                                onesignal_google_project_number: "REMOTE"]
+    }
+    dexOptions {
+        jumboMode true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    testCompile 'junit:junit:4.12'
+    compile('com.twitter.sdk.android:twitter:2.2.0@aar') {
+        transitive = true
+    }
+    compile 'com.firebaseui:firebase-ui:1.0.1'
+    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:recyclerview-v7:25.1.0'
+    compile 'com.makeramen:roundedimageview:2.2.1'
+    compile 'com.cocosw:bottomsheet:1.+@aar'
+    compile 'com.wunderlist:sliding-layer:1.2.5'
+    compile 'com.github.castorflex.verticalviewpager:library:19.0.1'
+    compile 'biz.kasual:materialnumberpicker:1.2.1'
+    compile 'com.android.support:gridlayout-v7:25.1.0'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+    compile 'com.wefika:flowlayout:0.4.1'
+    compile 'com.github.kevinsawicki:http-request:6.0'
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
+    compile project(':moduleSlidingMenu')
+    compile 'com.onesignal:OneSignal:3.+@aar'
+    compile 'com.google.android.gms:play-services-gcm:9.0.0'
+}

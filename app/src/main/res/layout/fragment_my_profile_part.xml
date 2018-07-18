@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:weightSum="7">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="16dp"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/following"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="116dp"
+            android:layout_weight="1"
+            android:background="@drawable/bck_my_profile_followers"
+            android:clickable="true"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/following"
+            android:textColor="@color/selector_text_hint_white"
+            android:textSize="@dimen/text_xsmall" />
+
+        <TextView
+            android:id="@+id/followers"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:background="@drawable/bck_my_profile_followers"
+            android:clickable="true"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/followers"
+            android:textColor="@color/selector_text_hint_white"
+            android:textSize="@dimen/text_xsmall" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+    <FrameLayout
+        android:id="@+id/active_posts"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/bck_my_profile_actions"
+        android:clickable="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:paddingStart="24dp"
+            android:text="@string/active_posts"
+            android:textColor="@color/selector_text_hint_white"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/active_posts_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:drawableEnd="@drawable/ic_my_profile_arrow_selector"
+            android:drawablePadding="12dp"
+            android:paddingEnd="24dp"
+            android:text="0"
+            android:textColor="@color/selector_text_primary_white"
+            android:textSize="@dimen/text_medium" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/active_bids"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bck_my_profile_actions"
+        android:clickable="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:paddingStart="24dp"
+            android:text="@string/active_bids"
+            android:textColor="@color/selector_text_hint_white"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/active_bids_counts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:drawableEnd="@drawable/ic_my_profile_arrow_selector"
+            android:drawablePadding="12dp"
+            android:paddingEnd="24dp"
+            android:text="0"
+            android:textColor="@color/selector_text_primary_white"
+            android:textSize="@dimen/text_medium" />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/divider" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/items_sold"
+            android:textColor="@color/textHint"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/sold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="0"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_medium" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/items_purchased"
+            android:textColor="@color/textHint"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/purchased"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="0"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_medium" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

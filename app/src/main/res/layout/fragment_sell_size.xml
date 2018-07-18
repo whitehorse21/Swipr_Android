@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="88dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="88dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@drawable/bck_sell_size"
+        android:clickable="true"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:textColor="@color/selector_text_primary_white"
+        android:textColorHint="@color/textHintLight"
+        android:textSize="@dimen/text_xlarge" />
+
+</FrameLayout>

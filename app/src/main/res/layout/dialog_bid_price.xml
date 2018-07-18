@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="36dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/bck_dialog"
+        android:elevation="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="100">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center_horizontal"
+                android:paddingBottom="16dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="16dp"
+                android:text="@string/place_bid"
+                android:textColor="@color/textSecondary"
+                android:textSize="@dimen/text_medium" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="25"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_title1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:text="@string/include_shipping"
+                android:textColor="@color/textSecondary"
+                android:textSize="@dimen/text_xxsmall" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/timer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bck_btn_bid_set_addition"
+                    android:clickable="true"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/set_timer"
+                    android:textAllCaps="true"
+                    android:textColor="@color/selector_text_secondary_white"
+                    android:textSize="@dimen/text_xsmall" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/shipping"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:button="@drawable/btn_check_box" />
+
+                <TextView
+                    android:id="@+id/message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bck_btn_bid_set_addition"
+                    android:clickable="true"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/write_message"
+                    android:textAllCaps="true"
+                    android:textColor="@color/selector_text_secondary_white"
+                    android:textSize="@dimen/text_xsmall" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="75"
+                app:columnCount="3"
+                app:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/point_1"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_2"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_3"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_4"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="4"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_5"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="5"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_6"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="6"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_7"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="7"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_8"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="8"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_9"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="9"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:background="@color/colorPrimary"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_0"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+                <TextView
+                    android:id="@+id/point_c"
+                    android:background="@drawable/selector_item_primary"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="C"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_xlarge"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1" />
+
+            </android.support.v7.widget.GridLayout>
+
+            <ImageButton
+                android:id="@+id/positive"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:background="@drawable/bck_btn_dialog_white"
+                android:src="@drawable/ic_done"
+                android:tint="@color/colorPrimary" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="8dp"
+            android:background="@drawable/selector_image_dark"
+            android:padding="8dp"
+            android:src="@drawable/ic_cancel" />
+    </FrameLayout>
+</FrameLayout>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="36dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/bck_dialog"
+        android:elevation="12dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center_horizontal"
+                android:paddingBottom="16dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="16dp"
+                android:text="@string/how_can_buyers_contact"
+                android:textColor="@color/textSecondary"
+                android:textSize="@dimen/text_medium" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp">
+
+                <EditText
+                    android:id="@+id/street"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bck_editable_main"
+                    android:fontFamily="sans-serif-light"
+                    android:hint="@string/street"
+                    android:includeFontPadding="false"
+                    android:inputType="textCapWords"
+                    android:maxLength="64"
+                    android:paddingBottom="16dp"
+                    android:paddingEnd="24dp"
+                    android:paddingStart="24dp"
+                    android:paddingTop="16dp"
+                    android:singleLine="true"
+                    android:textColor="@color/textPrimary"
+                    android:textColorHint="@color/textHintLight"
+                    android:textSize="@dimen/text_regular" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:weightSum="5">
+
+                    <EditText
+                        android:id="@+id/post_code"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/bck_editable_main"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="@string/post_code"
+                        android:imeOptions="actionNext"
+                        android:includeFontPadding="false"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:paddingBottom="16dp"
+                        android:paddingEnd="24dp"
+                        android:paddingStart="24dp"
+                        android:paddingTop="16dp"
+                        android:singleLine="true"
+                        android:textColor="@color/textPrimary"
+                        android:textColorHint="@color/textHintLight"
+                        android:textSize="@dimen/text_regular" />
+
+                    <EditText
+                        android:id="@+id/city"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:background="@drawable/bck_editable_main"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="@string/city"
+                        android:includeFontPadding="false"
+                        android:inputType="textCapWords"
+                        android:maxLength="32"
+                        android:paddingBottom="16dp"
+                        android:paddingEnd="24dp"
+                        android:paddingStart="24dp"
+                        android:paddingTop="16dp"
+                        android:singleLine="true"
+                        android:textColor="@color/textPrimary"
+                        android:textColorHint="@color/textHintLight"
+                        android:textSize="@dimen/text_regular" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bck_editable_main"
+                    android:fontFamily="sans-serif-light"
+                    android:hint="@string/mobile_no"
+                    android:includeFontPadding="false"
+                    android:inputType="phone"
+                    android:maxLength="15"
+                    android:paddingBottom="16dp"
+                    android:paddingEnd="24dp"
+                    android:paddingStart="24dp"
+                    android:paddingTop="16dp"
+                    android:singleLine="true"
+                    android:textColor="@color/textPrimary"
+                    android:textColorHint="@color/textHintLight"
+                    android:textSize="@dimen/text_regular" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/positive"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:background="@drawable/bck_btn_dialog"
+                android:src="@drawable/ic_done" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="8dp"
+            android:background="@drawable/selector_image_dark"
+            android:padding="8dp"
+            android:src="@drawable/ic_cancel" />
+    </FrameLayout>
+
+</FrameLayout>

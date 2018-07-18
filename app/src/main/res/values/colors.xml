@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="backgroundGray">#ececec</color>
+    <color name="colorPrimary">#00dbc5</color>
+    <color name="colorPrimaryTransparent">#4400dbc5</color>
+    <color name="colorPrimaryDark">#00dbc5</color>
+    <color name="colorAccent">#ff645f</color>
+    <color name="colorAccentDark">#ff645f</color>
+    <color name="colorAccentLight">#f5c4c2</color>
+    <color name="textPrimary">#6d6e70</color>
+    <color name="textSecondary">#afafaf</color>
+    <color name="textDays">#008000</color>
+    <color name="textHint">#999999</color>
+    <color name="colorControlHighlightDark">#22000000</color>
+    <color name="colorControlHighlightLight">#33ffffff</color>
+    <color name="textHintTransculent">#bbffffff</color>
+    <color name="textHintLight">#cccccc</color>
+    <color name="divider">#dddddd</color>
+    <color name="plusYellow">#f4be24</color>
+    <color name="plusYellowDark">#d7a424</color>
+    <color name="plusYellowTransparent">#77f4be24</color>
+</resources>

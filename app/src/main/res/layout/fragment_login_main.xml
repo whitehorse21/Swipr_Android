@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="32dp"
+    android:paddingRight="32dp"
+    android:weightSum="4">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_logo_login" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/facebook"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@drawable/bck_btn_facebook"
+        android:fontFamily="sans-serif-light"
+        android:stateListAnimator="@null"
+        android:text="@string/login_with_facebook"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_medium" />
+
+    <Button
+        android:id="@+id/create"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bck_btn_create_account"
+        android:fontFamily="sans-serif-light"
+        android:stateListAnimator="@null"
+        android:text="@string/create_account"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/text_medium" />
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bck_btn_log_in"
+        android:fontFamily="sans-serif-light"
+        android:stateListAnimator="@null"
+        android:text="@string/login_with_swipr"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_medium" />
+
+    <!--<TextView-->
+        <!--android:id="@+id/login"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:clickable="true"-->
+        <!--android:fontFamily="sans-serif-light"-->
+        <!--android:text="@string/login_with_swipr"-->
+        <!--android:textColor="@color/selector_text_white"-->
+        <!--android:textSize="@dimen/text_medium" />-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+    <TextView
+        android:id="@+id/anonymous_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/let_me_in"
+        android:textColor="@color/selector_text_white"
+        android:textSize="@dimen/text_xsmall" />
+</LinearLayout>

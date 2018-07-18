@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundGray"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <include
+        layout="@layout/action_main"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="@android:color/white"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/active_bids"
+            android:textColor="@color/textHint"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:textColor="@color/textHint"
+            android:textSize="@dimen/text_medium" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <FrameLayout
+            android:id="@+id/radio_sent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:clickable="true"
+            android:foreground="@drawable/selector_image_light"
+            android:paddingLeft="48dp"
+            android:paddingRight="48dp">
+
+            <TextView
+                android:id="@+id/title_sent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/sent"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_small" />
+
+            <TextView
+                android:id="@+id/count_sent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_medium" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/radio_received"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:foreground="@drawable/selector_image_dark"
+            android:paddingLeft="48dp"
+            android:paddingRight="48dp">
+
+            <TextView
+                android:id="@+id/title_received"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/received"
+                android:textColor="@color/textHint"
+                android:textSize="@dimen/text_small" />
+
+            <TextView
+                android:id="@+id/count_received"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="0"
+                android:textColor="@color/textHint"
+                android:textSize="@dimen/text_medium" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <dk.techtify.swipr.view.LockedViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

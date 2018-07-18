@@ -1,0 +1,13 @@
+<resources>
+
+    <style name="LoginTheme" parent="BaseTheme">
+        <item name="android:windowBackground">@drawable/bck_main</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="MainTheme" parent="BaseTheme">
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+</resources>

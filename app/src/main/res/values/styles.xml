@@ -1,0 +1,39 @@
+<resources>
+
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="LoginTheme" parent="BaseTheme">
+        <item name="android:windowBackground">@drawable/bck_main</item>
+    </style>
+
+    <style name="MainTheme" parent="BaseTheme">
+        <item name="android:windowBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="GreyTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/backgroundDarkGray</item>
+        <item name="colorPrimaryDark">@color/backgroundDarkGray</item>
+        <item name="android:windowBackground">@color/backgroundDarkGray</item>
+    </style>
+
+    <style name="DialogSlidingAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_left</item>
+    </style>
+
+    <style name="DialogSlidingAnimationReverse">
+        <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_right</item>
+    </style>
+
+    <style name="DialogSlidingAnimationBackReverse">
+        <item name="android:windowEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_left</item>
+    </style>
+
+    <color name="backgroundDarkGray">#3a3a3a</color>
+</resources>

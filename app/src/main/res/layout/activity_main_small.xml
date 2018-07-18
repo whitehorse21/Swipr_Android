@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include
+        layout="@layout/action_main"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
+    <com.wunderlist.slidinglayer.SlidingLayer
+        android:id="@+id/menu_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:changeStateOnTap="false"
+        app:stickTo="top">
+
+        <LinearLayout
+            android:id="@+id/menu_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bck_main"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <TextView
+                    android:id="@+id/menu_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="?attr/actionBarSize"
+                    android:layout_marginStart="?attr/actionBarSize"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/create_profile"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_large" />
+
+                <ImageButton
+                    android:id="@+id/menu_menu"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/selector_image_light"
+                    android:clickable="true"
+                    android:src="@drawable/ic_menu" />
+
+                <ImageButton
+                    android:id="@+id/menu_settings"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/selector_image_light"
+                    android:clickable="true"
+                    android:src="@drawable/ic_settings" />
+            </FrameLayout>
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/menu_user_photo"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_marginBottom="8dp"
+                android:adjustViewBounds="true"
+                android:clickable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_profile_empty"
+                app:riv_border_color="@color/colorPrimary"
+                app:riv_border_width="2dp"
+                app:riv_oval="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/store"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bck_menu_item"
+                android:fontFamily="sans-serif-regular"
+                android:stateListAnimator="@null"
+                android:text="@string/store"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_medium" />
+
+            <Button
+                android:id="@+id/sell"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bck_menu_item"
+                android:fontFamily="sans-serif-regular"
+                android:stateListAnimator="@null"
+                android:text="@string/sell"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_medium" />
+
+            <Button
+                android:id="@+id/message"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bck_menu_item"
+                android:fontFamily="sans-serif-regular"
+                android:stateListAnimator="@null"
+                android:text="@string/messages"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_medium" />
+
+            <Button
+                android:id="@+id/favourites"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bck_menu_item"
+                android:fontFamily="sans-serif-regular"
+                android:stateListAnimator="@null"
+                android:text="@string/favourites"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_medium" />
+
+            <Button
+                android:id="@+id/faq"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bck_menu_item"
+                android:fontFamily="sans-serif-regular"
+                android:stateListAnimator="@null"
+                android:text="@string/faq"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_medium" />
+
+            <Button
+                android:id="@+id/about"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bck_menu_item"
+                android:fontFamily="sans-serif-regular"
+                android:stateListAnimator="@null"
+                android:text="@string/about_swipr"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_medium" />
+
+        </LinearLayout>
+    </com.wunderlist.slidinglayer.SlidingLayer>
+</FrameLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="gender_selector_view_id" type="id" />
+    <item name="sheet_photo_camera" type="id" />
+    <item name="sheet_photo_gallery" type="id" />
+    <item name="sheet_photo_remove" type="id" />
+    <item name="sheet_report_abuse" type="id" />
+</resources>
