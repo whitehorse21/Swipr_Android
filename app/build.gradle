@@ -20,7 +20,7 @@ android {
         versionCode 6
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        multiDexEnabled true
         manifestPlaceholders = [onesignal_app_id               : "c93db72e-f062-43b1-b406-e33d250bc5ee",
                                 onesignal_google_project_number: "REMOTE"]
     }
@@ -31,7 +31,7 @@ android {
     dependencies {
         configurations.all {
             resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-                if (details.requested.group == 'com.android.support') {
+                if (details.requested.group == 'com.android.support' && details.requested.name != 'multidex' && details.requested.name != 'multidex-instrumentation') {
                     details.useVersion "27.1.1"
                 }
             }
@@ -92,5 +92,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestImplementation 'junit:junit:4.12'
-
+    implementation "com.android.support:multidex:1.0.3"
 }
