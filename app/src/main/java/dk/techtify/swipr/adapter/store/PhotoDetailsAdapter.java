@@ -2,6 +2,7 @@ package dk.techtify.swipr.adapter.store;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.helper.DisplayHelper;
+import dk.techtify.swipr.helper.GlideApp;
 
 /**
  * Created by Pavel on 1/4/2017.
@@ -62,10 +64,11 @@ public class PhotoDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         h.photo.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         h.root.setTag(position);
-        Glide.with(mContext)
-                .using(new FirebaseImageLoader())
-                .load(mStorage.getReferenceFromUrl(mList.get(position)))
-                .into(h.photo);
+        if (!TextUtils.isEmpty(mList.get(position))) {
+            GlideApp.with(mContext)
+                    .load(mStorage.getReferenceFromUrl(mList.get(position)))
+                    .into(h.photo);
+        }
     }
 
     @Override

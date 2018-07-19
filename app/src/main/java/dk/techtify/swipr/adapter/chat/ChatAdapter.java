@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import dk.techtify.swipr.activity.chat.OneProductActivity;
 import dk.techtify.swipr.dialog.chat.LeaveRatingDialog;
 import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.DisplayHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.chat.Message;
 import dk.techtify.swipr.model.chat.MessageContent;
@@ -109,9 +111,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     MessageContentDataProduct mcdp = (MessageContentDataProduct) message.getMessageContent().getData();
                     String url = mcdp.getPhotoUrl();
-                    if (url != null) {
-                        Glide.with(mContext)
-                                .using(new FirebaseImageLoader())
+                    if (!TextUtils.isEmpty(url)) {
+                        GlideApp.with(mContext)
                                 .load(FirebaseStorage.getInstance().getReferenceFromUrl(url))
                                 .into(h.photoMy);
                     }
@@ -152,9 +153,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     MessageContentDataProduct mcdp = (MessageContentDataProduct) message.getMessageContent().getData();
                     String url = mcdp.getPhotoUrl();
-                    if (url != null) {
-                        Glide.with(mContext)
-                                .using(new FirebaseImageLoader())
+                    if (!TextUtils.isEmpty(url)) {
+                        GlideApp.with(mContext)
                                 .load(FirebaseStorage.getInstance().getReferenceFromUrl(url))
                                 .into(h.photoTheir);
                     }

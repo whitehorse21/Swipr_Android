@@ -3,6 +3,7 @@ package dk.techtify.swipr.view;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -11,15 +12,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.helper.DisplayHelper;
-import dk.techtify.swipr.model.user.User;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.model.store.Product;
+import dk.techtify.swipr.model.user.User;
 
 /**
  * Created by Pavel on 1/9/2017.
@@ -88,11 +88,11 @@ public class ProductPreview extends FrameLayout {
             mProfileImage.setLayoutParams(profileImageParams);
             mProfileImage.setOval(true);
             addView(mProfileImage);
-
-            Glide.with(getContext())
-                    .using(new FirebaseImageLoader())
-                    .load(FirebaseStorage.getInstance().getReferenceFromUrl(User.getLocalUser().getPhotoUrl()))
-                    .into(mProfileImage);
+            if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
+                GlideApp.with(getContext())
+                        .load(FirebaseStorage.getInstance().getReferenceFromUrl(User.getLocalUser().getPhotoUrl()))
+                        .into(mProfileImage);
+            }
         }
 
         if (user.getName() != null) {
@@ -138,11 +138,11 @@ public class ProductPreview extends FrameLayout {
                 mProductImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 addView(mProductImage, 0);
 
-                Glide.with(getContext())
-                        .using(new FirebaseImageLoader())
-                        .load(FirebaseStorage.getInstance().getReferenceFromUrl(mProduct.getPhotos()
-                                .get(0)))
-                        .into(mProductImage);
+                if (!TextUtils.isEmpty(mProduct.getPhotos().get(0))) {
+                    GlideApp.with(getContext())
+                            .load(FirebaseStorage.getInstance().getReferenceFromUrl(mProduct.getPhotos().get(0)))
+                            .into(mProductImage);
+                }
 //                BitmapHelper.createThumbnailFromPhoto(mProduct.getPhotos()
 //                        .get(0), new BitmapHelper.LoadCompleteListener() {
 //

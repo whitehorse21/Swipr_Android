@@ -6,11 +6,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -29,7 +28,7 @@ import java.util.Map;
 
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.adapter.chat.ChatAdapter;
-import dk.techtify.swipr.helper.FirebaseHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.helper.OneSignalHelper;
 import dk.techtify.swipr.model.chat.ChatRoom;
@@ -97,10 +96,11 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.LastI
 
         if (mRecipient.getPhotoUrl() != null && !mRecipient.getPhotoUrl().isEmpty()) {
             mActionView.getPhotoView().setVisibility(View.VISIBLE);
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
-                    .load(FirebaseStorage.getInstance().getReferenceFromUrl(mRecipient.getPhotoUrl()))
-                    .into(mActionView.getPhotoView());
+            if (!TextUtils.isEmpty(mRecipient.getPhotoUrl())) {
+                GlideApp.with(this)
+                        .load(FirebaseStorage.getInstance().getReferenceFromUrl(mRecipient.getPhotoUrl()))
+                        .into(mActionView.getPhotoView());
+            }
         }
 
         mProgressBar = findViewById(R.id.progress);

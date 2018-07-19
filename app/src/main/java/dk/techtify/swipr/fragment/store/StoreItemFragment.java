@@ -14,8 +14,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -43,7 +41,6 @@ import dk.techtify.swipr.asynctask.ApiResponseListener;
 import dk.techtify.swipr.asynctask.DeleteFromFavoritesAsyncTask;
 import dk.techtify.swipr.asynctask.ProductSeenAsyncTask;
 import dk.techtify.swipr.dialog.main.SwiprPlusDialog;
-import dk.techtify.swipr.dialog.store.BidFeeAlertDialog;
 import dk.techtify.swipr.dialog.store.BidMessageDialog;
 import dk.techtify.swipr.dialog.store.BidOverviewDialog;
 import dk.techtify.swipr.dialog.store.BidPriceDialog;
@@ -52,6 +49,7 @@ import dk.techtify.swipr.dialog.store.BidTimerDialog;
 import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.DialogHelper;
 import dk.techtify.swipr.helper.FirebaseHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.chat.MessageContent;
 import dk.techtify.swipr.model.chat.MessageContentDataProduct;
@@ -185,9 +183,8 @@ public class StoreItemFragment extends Fragment {
         });
 
         ImageView photoView = (ImageView) view.findViewById(R.id.photo);
-        if (mProduct.getPhotos() != null && mProduct.getPhotos().size() > 0) {
-            Glide.with(getActivity())
-                    .using(new FirebaseImageLoader())
+        if (mProduct.getPhotos() != null && mProduct.getPhotos().size() > 0 && !TextUtils.isEmpty(mProduct.getPhotos().get(0))) {
+            GlideApp.with(getActivity())
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(mProduct.getPhotos().get(0)))
                     .into(photoView);
         }

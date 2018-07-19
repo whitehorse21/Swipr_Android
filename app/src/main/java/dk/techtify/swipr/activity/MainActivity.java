@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -48,6 +49,7 @@ import dk.techtify.swipr.fragment.sell.SellAdditionalInfoFragment;
 import dk.techtify.swipr.helper.DialogHelper;
 import dk.techtify.swipr.helper.DisplayHelper;
 import dk.techtify.swipr.helper.FragmentHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.IoHelper;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.helper.PermissionHelper;
@@ -343,9 +345,8 @@ public class MainActivity extends BaseActivity implements SwiprPlusDialog.DealLi
         });
         if (User.getLocalUser().getEmail() != null) {
             ImageView photo = (ImageView) findViewById(R.id.menu_user_photo);
-            if (User.getLocalUser().getPhotoUrl() != null) {
-                Glide.with(this)
-                        .using(new FirebaseImageLoader())
+            if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
+                GlideApp.with(this)
                         .load(FirebaseStorage.getInstance().getReferenceFromUrl(User.getLocalUser().getPhotoUrl()))
                         .into(photo);
             }

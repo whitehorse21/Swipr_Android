@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import dk.techtify.swipr.asynctask.ApiResponseListener;
 import dk.techtify.swipr.dialog.profile.ShareDialog;
 import dk.techtify.swipr.helper.DialogHelper;
 import dk.techtify.swipr.helper.FirebaseHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.model.store.Product;
@@ -69,10 +71,9 @@ public class ActivePostsActivity extends BaseActivity implements ActivePostsAdap
             }
         });
 
-        if (User.getLocalUser().getPhotoUrl() != null) {
+        if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
             mActionView.getPhotoView().setVisibility(View.VISIBLE);
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
+            GlideApp.with(this)
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(User.getLocalUser().getPhotoUrl()))
                     .into(mActionView.getPhotoView());
         }

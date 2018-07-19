@@ -309,7 +309,7 @@ public class LoginActivity extends AppCompatActivity {
         byte[] data = baos.toByteArray();
 
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(Constants.Firebase.BUCKET_NAME);
-        StorageReference mountainsRef = storageRef.child("user-data/" + mAuth.getCurrentUser().getUid() + "/profilePicture.png");
+        final StorageReference mountainsRef = storageRef.child("user-data/" + mAuth.getCurrentUser().getUid() + "/profilePicture.png");
 
         UploadTask uploadTask = mountainsRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -321,7 +321,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mDatabase.child("user-data").child(mAuth.getCurrentUser().getUid()).child("photoUrl")
-                        .setValue(taskSnapshot.getDownloadUrl().toString().split("\\?")[0])
+                        .setValue(mountainsRef.getDownloadUrl().getResult().toString().split("\\?")[0])
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -342,7 +342,7 @@ public class LoginActivity extends AppCompatActivity {
         byte[] data = baos.toByteArray();
 
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(Constants.Firebase.BUCKET_NAME);
-        StorageReference mountainsRef = storageRef.child("user-data/" + mAuth.getCurrentUser().getUid() + "/profilePicture.png");
+        final StorageReference mountainsRef = storageRef.child("user-data/" + mAuth.getCurrentUser().getUid() + "/profilePicture.png");
 
         UploadTask uploadTask = mountainsRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -353,7 +353,7 @@ public class LoginActivity extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                createUser(progress, firstName, lastName, email, taskSnapshot.getDownloadUrl().toString().split("\\?")[0], gender);
+                createUser(progress, firstName, lastName, email, mountainsRef.getDownloadUrl().getResult().toString().split("\\?")[0], gender);
             }
         });
     }

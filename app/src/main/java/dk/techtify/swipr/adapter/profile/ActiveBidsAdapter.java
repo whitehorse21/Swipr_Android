@@ -29,6 +29,7 @@ import java.util.List;
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.DisplayHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.model.ServerTime;
 import dk.techtify.swipr.model.profile.IncomingBid;
 import dk.techtify.swipr.view.CounterTextView;
@@ -79,9 +80,8 @@ public class ActiveBidsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         h.root.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 DisplayHelper.dpToPx(mContext, 112)));
 
-        if (bid.getProductPhotoUrl() != null) {
-            Glide.with(mContext)
-                    .using(new FirebaseImageLoader())
+        if (!TextUtils.isEmpty(bid.getProductPhotoUrl())) {
+            GlideApp.with(mContext)
                     .load(mStorage.getReferenceFromUrl(bid.getProductPhotoUrl()))
                     .into(h.photo);
         } else {

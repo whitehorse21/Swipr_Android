@@ -3,6 +3,7 @@ package dk.techtify.swipr.activity.profile;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import java.util.Observer;
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.activity.BaseActivity;
 import dk.techtify.swipr.adapter.profile.ActiveBidsPagerAdapter;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.model.user.Counters;
 import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.view.ActionView;
@@ -49,10 +51,9 @@ public class ActiveBidsActivity extends BaseActivity implements Observer {
             }
         });
 
-        if (User.getLocalUser().getPhotoUrl() != null) {
+        if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
             mActionView.getPhotoView().setVisibility(View.VISIBLE);
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
+            GlideApp.with(this)
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(User.getLocalUser().getPhotoUrl()))
                     .into(mActionView.getPhotoView());
         }

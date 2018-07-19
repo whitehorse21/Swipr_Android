@@ -3,6 +3,7 @@ package dk.techtify.swipr.adapter.profile;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import java.util.Map;
 
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.helper.DisplayHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.profile.Follow;
 import dk.techtify.swipr.model.user.Counters;
@@ -91,9 +93,8 @@ public class FollowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         h.name.setText(mList.get(position).getName());
 
-        if (follow.getPhotoUrl() != null) {
-            Glide.with(mContext)
-                    .using(new FirebaseImageLoader())
+        if (!TextUtils.isEmpty(follow.getPhotoUrl())) {
+            GlideApp.with(mContext)
                     .load(mStorage.getReferenceFromUrl(follow.getPhotoUrl()))
                     .into(h.photo);
         } else {

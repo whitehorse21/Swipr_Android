@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +33,7 @@ import dk.techtify.swipr.dialog.store.BidSuccessfulDialog;
 import dk.techtify.swipr.dialog.store.BidTimerDialog;
 import dk.techtify.swipr.dialog.store.SellerBuyerDialog;
 import dk.techtify.swipr.helper.DialogHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.store.OutgoingBid;
 import dk.techtify.swipr.model.store.Product;
@@ -80,8 +79,7 @@ public class OneProductActivity extends BaseActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         if (getIntent().hasExtra(EXTRA_PHOTO_URL)) {
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
+            GlideApp.with(this)
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(
                             getIntent().getStringExtra(EXTRA_PHOTO_URL)))
                     .into((ImageView) findViewById(R.id.photo));
@@ -130,9 +128,8 @@ public class OneProductActivity extends BaseActivity {
     }
 
     private void setProductFields() {
-        if (!getIntent().hasExtra(EXTRA_PHOTO_URL)) {
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
+        if (!getIntent().hasExtra(EXTRA_PHOTO_URL) && !TextUtils.isEmpty(mProduct.getPhotos().get(0))) {
+            GlideApp.with(this)
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(
                             mProduct.getPhotos().get(0)))
                     .into((ImageView) findViewById(R.id.photo));
@@ -175,9 +172,8 @@ public class OneProductActivity extends BaseActivity {
     }
 
     private void setSellerFields() {
-        if (mSeller.getPhotoUrl() != null) {
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
+        if (!TextUtils.isEmpty(mSeller.getPhotoUrl())) {
+            GlideApp.with(this)
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(
                             mSeller.getPhotoUrl()))
                     .into((ImageView) findViewById(R.id.seller_photo));

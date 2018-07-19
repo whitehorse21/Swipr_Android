@@ -4,13 +4,11 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.NotificationCompat;
+import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.onesignal.NotificationExtenderService;
 import com.onesignal.OSNotificationReceivedResult;
@@ -23,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.activity.MainActivity;
 import dk.techtify.swipr.helper.DisplayHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.model.chat.MessageContent;
 
 /**
@@ -126,11 +125,13 @@ public class SwiprNotificationExtender extends NotificationExtenderService {
     private void loadPhoto(Context context, int id, Notification notification, String senderPhotoUrl) {
         int size = DisplayHelper.dpToPx(context, 64);
         try {
-            Bitmap b = Glide.with(context)
-                    .using(new FirebaseImageLoader())
-                    .load(FirebaseStorage.getInstance().getReferenceFromUrl(senderPhotoUrl))
-                    .asBitmap().into(size, size).get();
-            notification.largeIcon = b;
+            if (!TextUtils.isEmpty(senderPhotoUrl)) {
+                notification.largeIcon = GlideApp.with(context)
+                        .asBitmap()
+                        .load(FirebaseStorage.getInstance().getReferenceFromUrl(senderPhotoUrl))
+                        .submit(size, size)
+                        .get();
+            }
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
             notificationManager.notify(id, notification);
         } catch (InterruptedException e) {

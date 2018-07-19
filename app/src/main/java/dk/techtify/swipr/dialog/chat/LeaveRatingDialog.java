@@ -24,6 +24,7 @@ import dk.techtify.swipr.R;
 import dk.techtify.swipr.dialog.BaseDialog;
 import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.FirebaseHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.profile.Follow;
 import dk.techtify.swipr.model.store.Product;
@@ -76,9 +77,8 @@ public class LeaveRatingDialog extends BaseDialog {
         mLeaveRating = (RatingBar) view.findViewById(R.id.leave_rating);
 
         ((TextView) view.findViewById(R.id.seller_name)).setText(mOtherPerson.getName());
-        if (mOtherPerson.getPhotoUrl() != null && !mOtherPerson.getPhotoUrl().isEmpty()) {
-            Glide.with(getActivity())
-                    .using(new FirebaseImageLoader())
+        if (!TextUtils.isEmpty(mOtherPerson.getPhotoUrl())) {
+            GlideApp.with(getActivity())
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(mOtherPerson.getPhotoUrl()))
                     .into((ImageView) view.findViewById(R.id.seller_photo));
         }

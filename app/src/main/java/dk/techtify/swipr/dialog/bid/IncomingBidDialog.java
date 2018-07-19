@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +25,7 @@ import dk.techtify.swipr.R;
 import dk.techtify.swipr.activity.BaseActivity;
 import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.DialogHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.IoHelper;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.profile.IncomingBid;
@@ -276,9 +275,8 @@ public class IncomingBidDialog extends Fragment {
         }
         mBidderCreatedView.setText(TextUtils.concat(getString(R.string
                 .user_since), "\n", DateTimeHelper.getFormattedDate(mBidder.getCreated(), "dd.MM.yyyy")));
-        if (mBidder.getPhotoUrl() != null && !mBidder.getPhotoUrl().isEmpty()) {
-            Glide.with(getActivity())
-                    .using(new FirebaseImageLoader())
+        if (!TextUtils.isEmpty(mBidder.getPhotoUrl())) {
+            GlideApp.with(getActivity())
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(mBidder.getPhotoUrl()))
                     .into(mBidderImageView);
         }

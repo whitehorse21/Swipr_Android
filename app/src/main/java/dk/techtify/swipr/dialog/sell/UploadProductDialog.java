@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,7 +48,6 @@ import dk.techtify.swipr.helper.DialogHelper;
 import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.model.sell.Photo;
 import dk.techtify.swipr.model.sell.Product;
-import io.fabric.sdk.android.services.network.HttpRequest;
 
 /**
  * Created by Pavel on 1/10/2017.
@@ -156,9 +156,8 @@ public class UploadProductDialog extends BaseDialog {
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                mServerPaths.add(downloadUrl.toString().split("\\?")[0]);
-
+                                Task<Uri> downloadUrl = mFileReferences.get(mNumber).getDownloadUrl();
+                                mServerPaths.add(downloadUrl.getResult().toString().split("\\?")[0]);
                                 mNumber += 1;
                                 if (mNumber > mFiles.size() - 1) {
                                     increaseCounter();

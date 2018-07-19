@@ -49,7 +49,8 @@ public class SwiprApp extends Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-        Realm.setDefaultConfiguration(new RealmConfiguration.Builder(this).schemaVersion(1).build());
+        Realm.init(this);
+        Realm.setDefaultConfiguration(new RealmConfiguration.Builder().schemaVersion(1).build());
 
         if (!getSp().contains(Constants.Prefs.IS_SCREEN_SMALL)) {
             getSp().edit().putBoolean(Constants.Prefs.IS_SCREEN_SMALL, DisplayHelper.pxToDp(this,

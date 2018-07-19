@@ -43,8 +43,8 @@ public class ContactInfo implements Serializable {
         this.postCode = map.containsKey("postCode") ? map.get("postCode").toString() : "";
         this.city = map.containsKey("city") ? map.get("city").toString() : "";
         this.mobile = map.containsKey("mobile") ? map.get("mobile").toString() : "";
-        this.lat = map.containsKey("lat") ? (Double) map.get("lat") : 0.0;
-        this.lng = map.containsKey("lng") ? (Double) map.get("lng") : 0.0;
+        this.lat = map.containsKey("lat") ? Double.valueOf(map.get("lat").toString()) : 0.0;
+        this.lng = map.containsKey("lng") ? Double.valueOf(map.get("lng").toString()) : 0.0;
     }
 
     public String getStreet() {

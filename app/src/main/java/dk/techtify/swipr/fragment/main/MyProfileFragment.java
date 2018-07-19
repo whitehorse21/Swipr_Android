@@ -26,6 +26,7 @@ import dk.techtify.swipr.activity.profile.ActiveBidsActivity;
 import dk.techtify.swipr.activity.profile.ActivePostsActivity;
 import dk.techtify.swipr.activity.profile.FollowersActivity;
 import dk.techtify.swipr.helper.DateTimeHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.user.Counters;
 import dk.techtify.swipr.model.user.User;
@@ -72,9 +73,8 @@ public class MyProfileFragment extends Fragment implements Observer {
             ((TextView) view.findViewById(R.id.address)).setText(user.getContactInfo().getCity());
         }
 
-        if (user.getPhotoUrl() != null) {
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
+        if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
+            GlideApp.with(this)
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(User.getLocalUser().getPhotoUrl()))
                     .into(((ImageView) view.findViewById(R.id.user_photo)));
         }

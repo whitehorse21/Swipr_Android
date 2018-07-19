@@ -3,6 +3,7 @@ package dk.techtify.swipr.adapter.chat;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import dk.techtify.swipr.R;
 import dk.techtify.swipr.activity.ChatActivity;
 import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.DisplayHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.chat.ChatRoom;
 import dk.techtify.swipr.model.push.OutgoingPush;
@@ -95,9 +97,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         h.name.setText(chatRoom.getUserName());
         h.time.setText(DateTimeHelper.showMessageTime(mContext, false, chatRoom.getMessageCreated()));
 
-        if (chatRoom.getUserPhotoUrl() != null) {
-            Glide.with(mContext)
-                    .using(new FirebaseImageLoader())
+        if (!TextUtils.isEmpty(chatRoom.getUserPhotoUrl())) {
+            GlideApp.with(mContext)
                     .load(mStorage.getReferenceFromUrl(chatRoom.getUserPhotoUrl()))
                     .into(h.photo);
         } else {

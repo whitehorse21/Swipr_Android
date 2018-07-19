@@ -1,30 +1,22 @@
 package dk.techtify.swipr.activity.store;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.adapter.store.PhotoDetailsAdapter;
-import dk.techtify.swipr.helper.IntentHelper;
-import dk.techtify.swipr.model.user.User;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.view.ActionView;
 
 /**
@@ -57,21 +49,22 @@ public class ProductDetailsActivity extends AppCompatActivity {
         final ArrayList<String> list = getIntent().getStringArrayListExtra(EXTRA_PHOTOS);
 
         final ImageView photo = (ImageView) findViewById(R.id.photo);
-
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(storage.getReferenceFromUrl(list.get(0)))
-                .into(photo);
+        if (!TextUtils.isEmpty(list.get(0))) {
+            GlideApp.with(this)
+                    .load(storage.getReferenceFromUrl(list.get(0)))
+                    .into(photo);
+        }
 
         RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recycler.setAdapter(new PhotoDetailsAdapter(this, list, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Glide.with(ProductDetailsActivity.this)
-                        .using(new FirebaseImageLoader())
-                        .load(storage.getReferenceFromUrl(list.get((Integer)v.getTag())))
-                        .into(photo);
+                if (!TextUtils.isEmpty(list.get((Integer)v.getTag()))) {
+                    GlideApp.with(ProductDetailsActivity.this)
+                            .load(storage.getReferenceFromUrl(list.get((Integer) v.getTag())))
+                            .into(photo);
+                }
             }
         }));
 

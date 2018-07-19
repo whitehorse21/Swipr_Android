@@ -23,6 +23,7 @@ import dk.techtify.swipr.Constants;
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.DisplayHelper;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.model.store.Product;
 
 /**
@@ -67,9 +68,8 @@ public class ActivePostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         h.root.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 DisplayHelper.dpToPx(mContext, 112)));
 
-        if (product.getPhotos() != null && product.getPhotos().size() > 0) {
-            Glide.with(mContext)
-                    .using(new FirebaseImageLoader())
+        if (product.getPhotos() != null && product.getPhotos().size() > 0 && !TextUtils.isEmpty(product.getPhotos().get(0))) {
+            GlideApp.with(mContext)
                     .load(mStorage.getReferenceFromUrl(product.getPhotos().get(0)))
                     .into(h.photo);
         } else {

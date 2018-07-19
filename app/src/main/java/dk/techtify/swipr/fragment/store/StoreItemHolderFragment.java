@@ -3,6 +3,7 @@ package dk.techtify.swipr.fragment.store;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import dk.techtify.swipr.AppConfig;
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.adapter.store.StoreItemAdapter;
 import dk.techtify.swipr.dialog.store.SellerBuyerDialog;
+import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.store.Product;
 import dk.techtify.swipr.model.store.SellerBuyer;
@@ -163,10 +165,9 @@ public class StoreItemHolderFragment extends Fragment implements ValueEventListe
         mPlusLabel.setVisibility(mSeller.isPlusMember() ? View.VISIBLE : View.INVISIBLE);
         mSellerName.setText(mSeller.getName());
 //        mSellerRating.setRating(mSeller.getRating());
-        if (mSeller.getPhotoUrl() != null && !mSeller.getPhotoUrl().isEmpty()) {
+        if (!TextUtils.isEmpty(mSeller.getPhotoUrl())) {
             try {
-                Glide.with(getActivity())
-                        .using(new FirebaseImageLoader())
+                GlideApp.with(getActivity())
                         .load(FirebaseStorage.getInstance().getReferenceFromUrl(mSeller.getPhotoUrl()))
                         .into(mSellerPhoto);
             } catch (Exception e) {
