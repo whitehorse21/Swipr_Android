@@ -59,10 +59,6 @@ public class MyProfileFragment extends Fragment implements Observer {
 
         ((TextView) view.findViewById(R.id.user_name)).setText(user.getName());
 
-        RatingBar ratingBar = view.findViewById(R.id.rating);
-        ((RatingBar) view.findViewById(R.id.rating)).setRating(user.getRating());
-        ratingBar.setEnabled(false);
-
         ((TextView) view.findViewById(R.id.since)).setText(TextUtils.concat(
                 getString(R.string.user_since), "\n", DateTimeHelper.getFormattedDate(user.getCreatedAt(),
                         "dd.MM.yyyy")));

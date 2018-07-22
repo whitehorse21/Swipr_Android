@@ -166,7 +166,6 @@ public class OneProductActivity extends BaseActivity {
         }
         findViewById(R.id.plus_member).setVisibility(mSeller.isPlusMember() ? View.VISIBLE : View.INVISIBLE);
         ((TextView) findViewById(R.id.seller_name)).setText(mSeller.getName());
-        ((RatingBar) findViewById(R.id.rating)).setRating(mSeller.getRating());
         findViewById(R.id.seller_photo).setOnClickListener(v -> {
             SellerBuyerDialog uid = SellerBuyerDialog.newInstance(mSeller);
             uid.show(getSupportFragmentManager(), uid.getClass().getSimpleName());

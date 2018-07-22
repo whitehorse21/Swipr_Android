@@ -141,9 +141,10 @@ public class HammerView extends FrameLayout {
                 }
             }
         });
-
-        mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        mBoomAudio = mSoundPool.load(getContext(), R.raw.deal, 2);
+        if (!isInEditMode()) {
+            mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+            mBoomAudio = mSoundPool.load(getContext(), R.raw.deal, 2);
+        }
     }
 
     private void finishHandler() {

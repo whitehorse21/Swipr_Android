@@ -150,12 +150,6 @@
             </LinearLayout>
         </FrameLayout>
 
-        <dk.techtify.swipr.view.RatingBar
-            android:id="@+id/rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-4dp" />
-
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/seller_photo"
             android:layout_width="100dp"

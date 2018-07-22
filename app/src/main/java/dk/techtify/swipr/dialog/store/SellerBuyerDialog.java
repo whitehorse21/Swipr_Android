@@ -68,7 +68,7 @@ public class SellerBuyerDialog extends BaseDialog {
 
         (view.findViewById(R.id.plus_member)).setVisibility(mSellerBuyer.isPlusMember() ? View.VISIBLE : View.INVISIBLE);
         ((TextView) view.findViewById(R.id.seller_name)).setText(mSellerBuyer.getName());
-        ((RatingBar) view.findViewById(R.id.rating)).setRating(mSellerBuyer.getRating());
+
         if (!TextUtils.isEmpty(mSellerBuyer.getPhotoUrl())) {
             GlideApp.with(getActivity())
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(mSellerBuyer.getPhotoUrl()))

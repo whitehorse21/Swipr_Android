@@ -31,7 +31,6 @@ import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.profile.IncomingBid;
 import dk.techtify.swipr.model.store.SellerBuyer;
 import dk.techtify.swipr.view.HammerView;
-import dk.techtify.swipr.view.RatingBar;
 
 /**
  * Created by Pavel on 1/20/2017.
@@ -51,7 +50,6 @@ public class IncomingBidDialog extends Fragment {
 
     private View mPlusMemberView;
     private TextView mBidderNameView, mBidderCityView, mBidderCreatedView;
-    private RatingBar mBidderRatingView;
     private ImageView mBidderImageView;
 
     public void setIncomingBid(IncomingBid incomingBid) {
@@ -88,7 +86,6 @@ public class IncomingBidDialog extends Fragment {
 
         mPlusMemberView = view.findViewById(R.id.plus_member);
         mBidderNameView = view.findViewById(R.id.seller_name);
-        mBidderRatingView = view.findViewById(R.id.rating);
         mBidderImageView = view.findViewById(R.id.seller_photo);
         mBidderCityView = view.findViewById(R.id.address);
         mBidderCreatedView = view.findViewById(R.id.created);
@@ -242,7 +239,6 @@ public class IncomingBidDialog extends Fragment {
     private void refreshSellerFields() {
         mPlusMemberView.setVisibility(mBidder.isPlusMember() ? View.VISIBLE : View.INVISIBLE);
         mBidderNameView.setText(mBidder.getName());
-        mBidderRatingView.setRating(mBidder.getRating());
         if (mBidder.getContactInfo() != null) {
             mBidderCityView.setText(mBidder.getContactInfo().getCity());
         }

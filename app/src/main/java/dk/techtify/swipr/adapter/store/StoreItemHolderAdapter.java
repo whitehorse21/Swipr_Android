@@ -49,7 +49,7 @@ public class StoreItemHolderAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Fragment instantiateItem(ViewGroup container, int position) {
         StoreItemHolderFragment fragment = (StoreItemHolderFragment) super.instantiateItem(container, position);
         mRegisteredFragments.put(position, fragment);
         if (AppConfig.DEBUG) {
