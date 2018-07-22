@@ -1,7 +1,6 @@
 package dk.techtify.swipr.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,8 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -82,17 +79,12 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.LastI
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mActionView = (ActionView) findViewById(R.id.action_view);
+        mActionView = findViewById(R.id.action_view);
         mActionView.setMenuButton(R.drawable.ic_arrow_back);
         mActionView.setTitle(mRecipient.getName());
         mActionView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mActionView.getActionButton().setVisibility(View.INVISIBLE);
-        mActionView.setMenuClickListener(new ActionView.MenuClickListener() {
-            @Override
-            public void onMenuClick() {
-                onBackPressed();
-            }
-        });
+        mActionView.setMenuClickListener(this::onBackPressed);
 
         if (mRecipient.getPhotoUrl() != null && !mRecipient.getPhotoUrl().isEmpty()) {
             mActionView.getPhotoView().setVisibility(View.VISIBLE);
@@ -105,20 +97,17 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.LastI
 
         mProgressBar = findViewById(R.id.progress);
 
-        mRecycler = (RecyclerView) findViewById(R.id.recycler);
+        mRecycler = findViewById(R.id.recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
         mAdapter = new ChatAdapter(this, this, mRecipient);
         mRecycler.setAdapter(mAdapter);
 
-        mEditable = (EditText) findViewById(R.id.editable);
+        mEditable = findViewById(R.id.editable);
 
-        findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mEditable.getText().toString().trim().length() > 0 &&
-                        NetworkHelper.isOnline(ChatActivity.this, NetworkHelper.ALERT)) {
-                    sendMessage(mEditable.getText().toString().trim());
-                }
+        findViewById(R.id.send).setOnClickListener(v -> {
+            if (mEditable.getText().toString().trim().length() > 0 &&
+                    NetworkHelper.isOnline(ChatActivity.this, NetworkHelper.ALERT)) {
+                sendMessage(mEditable.getText().toString().trim());
             }
         });
 
@@ -133,7 +122,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.LastI
     private ChildEventListener mChildEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            mAdapter.add(new Message(dataSnapshot.getKey().toString(), (Map<String, Object>) dataSnapshot.getValue()));
+            mAdapter.add(new Message(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue()));
             mRecycler.scrollToPosition(0);
         }
 
@@ -173,9 +162,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.LastI
 
                         List<Message> newMessages = new ArrayList<>();
                         Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                        Iterator it = map.entrySet().iterator();
-                        while (it.hasNext()) {
-                            Map.Entry pair = (Map.Entry) it.next();
+                        for (Object o : map.entrySet()) {
+                            Map.Entry pair = (Map.Entry) o;
                             newMessages.add(new Message(pair.getKey(), (Map<String, Object>) pair.getValue()));
                         }
                         if (newMessages.size() > 0) {
@@ -219,17 +207,14 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.LastI
         childUpdates.put("chat-room/" + mMe.getId() + "/" + mRecipient.getId(), myRoomMap);
         childUpdates.put("chat-room/" + mRecipient.getId() + "/" + mMe.getId(), theirRoomMap);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    mAdapter.removeItem(messageId);
-                }
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                mAdapter.removeItem(messageId);
+            }
 
-                if (!mTheyInChat) {
-                    OneSignalHelper.sendPush(new OutgoingPush(MessageContent.TYPE_PRODUCT_MESSAGE,
-                            text, mMe.getPhotoUrl(), mMe.getName(), mRecipient.getId()));
-                }
+            if (!mTheyInChat) {
+                OneSignalHelper.sendPush(new OutgoingPush(MessageContent.TYPE_PRODUCT_MESSAGE,
+                        text, mMe.getPhotoUrl(), mMe.getName(), mRecipient.getId()));
             }
         });
     }

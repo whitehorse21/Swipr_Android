@@ -1,7 +1,6 @@
 package dk.techtify.swipr.adapter.sell;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +9,11 @@ import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
-import dk.techtify.swipr.AppConfig;
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.helper.DisplayHelper;
 import dk.techtify.swipr.model.sell.Photo;
@@ -101,9 +98,9 @@ public class NewAddPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public PhotoHolder(View itemView) {
             super(itemView);
-            root = (FrameLayout) itemView.findViewById(R.id.root);
-            photo = (RoundedImageView) itemView.findViewById(R.id.photo);
-            remove = (ImageButton) itemView.findViewById(R.id.remove);
+            root = itemView.findViewById(R.id.root);
+            photo = itemView.findViewById(R.id.photo);
+            remove = itemView.findViewById(R.id.remove);
             remove.setOnClickListener(this);
         }
 

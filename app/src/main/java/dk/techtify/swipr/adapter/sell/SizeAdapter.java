@@ -30,9 +30,8 @@ public class SizeAdapter extends FragmentPagerAdapter {
         mFm = fm;
         mScales = new ArrayList<>();
 
-        Iterator it = allScales.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
+        for (Object o : allScales.entrySet()) {
+            Map.Entry pair = (Map.Entry) o;
             if (scales.contains(pair.getKey())) {
                 mScales.add((ArrayList<String>) pair.getValue());
             }

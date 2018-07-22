@@ -3,7 +3,6 @@ package dk.techtify.swipr.adapter.profile;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.wunderlist.slidinglayer.SlidingLayer;
 
@@ -109,31 +106,28 @@ public class ActivePostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public ActivePostHolder(View itemView) {
             super(itemView);
 
-            root = (FrameLayout) itemView.findViewById(R.id.root);
-            swipeable = (SlidingLayer) itemView.findViewById(R.id.swipeable);
+            root = itemView.findViewById(R.id.root);
+            swipeable = itemView.findViewById(R.id.swipeable);
             alphable = itemView.findViewById(R.id.alphable);
-            photo = (ImageView) itemView.findViewById(R.id.photo);
+            photo = itemView.findViewById(R.id.photo);
             share = itemView.findViewById(R.id.share);
             delete = itemView.findViewById(R.id.delete);
-            until = (TextView) itemView.findViewById(R.id.until);
-            created = (TextView) itemView.findViewById(R.id.created);
-            brand = (TextView) itemView.findViewById(R.id.brand);
-            views = (TextView) itemView.findViewById(R.id.views);
-            price = (TextView) itemView.findViewById(R.id.price);
+            until = itemView.findViewById(R.id.until);
+            created = itemView.findViewById(R.id.created);
+            brand = itemView.findViewById(R.id.brand);
+            views = itemView.findViewById(R.id.views);
+            price = itemView.findViewById(R.id.price);
 
             width = DisplayHelper.getScreenResolution(mContext)[0];
             offset = width - DisplayHelper.dpToPx(mContext, 192);
 
             swipeable.openLayer(false);
             swipeable.setOffsetDistance(offset);
-            swipeable.setOnScrollListener(new SlidingLayer.OnScrollListener() {
-                @Override
-                public void onScroll(final int absoluteScroll) {
-                    mParentSwipeListener.onParentSwipeEnable(!(absoluteScroll < width));
+            swipeable.setOnScrollListener(absoluteScroll -> {
+                mParentSwipeListener.onParentSwipeEnable(!(absoluteScroll < width));
 
-                    float relativeScroll = (float) absoluteScroll / (float) width;
-                    alphable.setAlpha(relativeScroll);
-                }
+                float relativeScroll = (float) absoluteScroll / (float) width;
+                alphable.setAlpha(relativeScroll);
             });
 
             share.setOnClickListener(this);

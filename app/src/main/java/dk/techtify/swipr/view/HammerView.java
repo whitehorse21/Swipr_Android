@@ -7,7 +7,6 @@ import android.media.SoundPool;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -38,6 +37,7 @@ public class HammerView extends FrameLayout {
 
     private OnBidAcceptedListener mOnBidAcceptedListener;
     private boolean hasFinished = false;
+    private static Handler handler;
 
     public void setOnBidAcceptedListener(OnBidAcceptedListener onBidAcceptedListener) {
         this.mOnBidAcceptedListener = onBidAcceptedListener;
@@ -73,7 +73,7 @@ public class HammerView extends FrameLayout {
     public void onFinishInflate() {
         super.onFinishInflate();
 
-        mImage = (ImageView) findViewById(R.id.image);
+        mImage = findViewById(R.id.image);
 
         mDialView = new DialView(getContext()) {
             @Override
@@ -147,7 +147,7 @@ public class HammerView extends FrameLayout {
     }
 
     private void finishHandler() {
-        new Handler() {
+        handler = new Handler() {
 
             @Override
             public void handleMessage(Message msg) {
@@ -172,7 +172,8 @@ public class HammerView extends FrameLayout {
                     }
                 }
             }
-        }.sendEmptyMessage(0);
+        };
+        handler.sendEmptyMessage(0);
     }
 
     private void returnToStartHandler() {

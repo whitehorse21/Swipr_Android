@@ -6,7 +6,6 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -148,47 +147,40 @@ public class PlusHandView extends FrameLayout {
                 getStreamVolume(AudioManager.STREAM_MUSIC);
         mSoundPool.play(mBoomAudio, volume, volume, 1, 0, 1f);
 
-        mImageHand.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mImageShadow.animate().scaleX(scale).scaleY(scale);
-                mImageHand.animate().scaleX(scale).scaleY(scale);
-            }
+        mImageHand.postDelayed(() -> {
+            mImageShadow.animate().scaleX(scale).scaleY(scale);
+            mImageHand.animate().scaleX(scale).scaleY(scale);
         }, 100);
-        mImageHand.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mImageShadow.animate().translationY(0).scaleX(1f).scaleY(1f);
-                mImageHand.animate().translationY(0).scaleX(1f).scaleY(1f).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
+        mImageHand.postDelayed(() -> {
+            mImageShadow.animate().translationY(0).scaleX(1f).scaleY(1f);
+            mImageHand.animate().translationY(0).scaleX(1f).scaleY(1f).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
 
-                    }
+                }
 
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        mAnimationDoneListener.onAnimationDone();
-                    }
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    mAnimationDoneListener.onAnimationDone();
+                }
 
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-                        mAnimationDoneListener.onAnimationDone();
-                    }
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                    mAnimationDoneListener.onAnimationDone();
+                }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
+                @Override
+                public void onAnimationRepeat(Animator animator) {
 
-                    }
-                });
-            }
+                }
+            });
         }, 1000);
     }
 
     private float calculateScale() {
         float total = MAX_DRAG * 1.2f;
         float lastDragAbsolute = mStartDragY - mLastDragY;
-        float scale = 1 + (lastDragAbsolute / total);
-        return scale;
+        return 1 + (lastDragAbsolute / total);
     }
 
     private boolean processTouchEvent(MotionEvent e) {
@@ -217,10 +209,7 @@ public class PlusHandView extends FrameLayout {
         }
         mLastDragY = y;
 
-        if (!mAllowDrag) {
-            return false;
-        }
-        return direction;
+        return mAllowDrag && direction;
     }
 
     public interface AnimationDoneListener {

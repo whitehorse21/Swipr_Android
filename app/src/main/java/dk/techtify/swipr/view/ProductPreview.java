@@ -119,12 +119,7 @@ public class ProductPreview extends FrameLayout {
         ratingBar.setScaleX(0.7f);
         ratingBar.setScaleY(0.7f);
         addView(ratingBar);
-        ratingBar.post(new Runnable() {
-            @Override
-            public void run() {
-                ratingBar.setRating(user.getRating());
-            }
-        });
+        ratingBar.post(() -> ratingBar.setRating(user.getRating()));
 
 
         if (mProduct != null) {

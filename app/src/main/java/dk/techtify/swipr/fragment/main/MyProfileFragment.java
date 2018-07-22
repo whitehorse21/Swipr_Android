@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -61,7 +59,7 @@ public class MyProfileFragment extends Fragment implements Observer {
 
         ((TextView) view.findViewById(R.id.user_name)).setText(user.getName());
 
-        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating);
+        RatingBar ratingBar = view.findViewById(R.id.rating);
         ((RatingBar) view.findViewById(R.id.rating)).setRating(user.getRating());
         ratingBar.setEnabled(false);
 
@@ -79,63 +77,51 @@ public class MyProfileFragment extends Fragment implements Observer {
                     .into(((ImageView) view.findViewById(R.id.user_photo)));
         }
 
-        mFollowing = (TextView) view.findViewById(R.id.following);
-        mFollowing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    Intent intent = new Intent(getActivity(), FollowersActivity.class);
-                    intent.putExtra(FollowersActivity.EXTRA_MODE, FollowersActivity.MODE_FOLLOWING);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
+        mFollowing = view.findViewById(R.id.following);
+        mFollowing.setOnClickListener(v -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                Intent intent = new Intent(getActivity(), FollowersActivity.class);
+                intent.putExtra(FollowersActivity.EXTRA_MODE, FollowersActivity.MODE_FOLLOWING);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
-        mFollowers = (TextView) view.findViewById(R.id.followers);
-        mFollowers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    Intent intent = new Intent(getActivity(), FollowersActivity.class);
-                    intent.putExtra(FollowersActivity.EXTRA_MODE, FollowersActivity.MODE_FOLLOWERS);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
+        mFollowers = view.findViewById(R.id.followers);
+        mFollowers.setOnClickListener(v -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                Intent intent = new Intent(getActivity(), FollowersActivity.class);
+                intent.putExtra(FollowersActivity.EXTRA_MODE, FollowersActivity.MODE_FOLLOWERS);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
-        mActivePostsCount = (TextView) view.findViewById(R.id.active_posts_count);
+        mActivePostsCount = view.findViewById(R.id.active_posts_count);
 
-        mActiveBidsCount = (TextView) view.findViewById(R.id.active_bids_counts);
+        mActiveBidsCount = view.findViewById(R.id.active_bids_counts);
 
-        mSold = (TextView) view.findViewById(R.id.sold);
+        mSold = view.findViewById(R.id.sold);
 
-        mPurchased = (TextView) view.findViewById(R.id.purchased);
+        mPurchased = view.findViewById(R.id.purchased);
 
-        view.findViewById(R.id.active_posts).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    Intent activePostsIntent = new Intent(getActivity(), ActivePostsActivity.class);
-                    activePostsIntent.putExtra(ActivePostsActivity.EXTRA_COUNT, mActivePostsCount
-                            .getText().toString());
-                    getActivity().startActivity(activePostsIntent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
+        view.findViewById(R.id.active_posts).setOnClickListener(v -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                Intent activePostsIntent = new Intent(getActivity(), ActivePostsActivity.class);
+                activePostsIntent.putExtra(ActivePostsActivity.EXTRA_COUNT, mActivePostsCount
+                        .getText().toString());
+                getActivity().startActivity(activePostsIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
-        view.findViewById(R.id.active_bids).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    Intent activeBidsIntent = new Intent(getActivity(), ActiveBidsActivity.class);
-                    activeBidsIntent.putExtra(ActiveBidsActivity.EXTRA_COUNT, mActiveBidsCount
-                            .getText().toString());
-                    getActivity().startActivity(activeBidsIntent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
+        view.findViewById(R.id.active_bids).setOnClickListener(v -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                Intent activeBidsIntent = new Intent(getActivity(), ActiveBidsActivity.class);
+                activeBidsIntent.putExtra(ActiveBidsActivity.EXTRA_COUNT, mActiveBidsCount
+                        .getText().toString());
+                getActivity().startActivity(activeBidsIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 

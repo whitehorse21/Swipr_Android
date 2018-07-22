@@ -93,92 +93,67 @@ public class SellFragment extends Fragment implements ActionView.ActionClickList
 
         final View view = inflater.inflate(R.layout.fragment_sell, null);
 
-        mScrollView = (ScrollView) view.findViewById(R.id.scroll_view);
+        mScrollView = view.findViewById(R.id.scroll_view);
 
         mForeground = view.findViewById(R.id.foreground);
 
         mAddProductType = view.findViewById(R.id.add_product_type);
         mAddBrand = view.findViewById(R.id.add_brand);
 
-        mAddProductType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    FragmentHelper.replaceChildFragment(SellFragment.this, SellSetProductTypeFragment
-                            .newInstance(SellSetProductTypeFragment.MODE_PRODUCT_TYPE, view.findViewById(
-                                    R.id.add_product_type_fl).getTop() - mScrollView.getScrollY()));
-                    mAddProductType.setVisibility(View.INVISIBLE);
-                    mForeground.animate().alpha(1f);
-                }
+        mAddProductType.setOnClickListener(v -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                FragmentHelper.replaceChildFragment(SellFragment.this, SellSetProductTypeFragment
+                        .newInstance(SellSetProductTypeFragment.MODE_PRODUCT_TYPE, view.findViewById(
+                                R.id.add_product_type_fl).getTop() - mScrollView.getScrollY()));
+                mAddProductType.setVisibility(View.INVISIBLE);
+                mForeground.animate().alpha(1f);
             }
         });
-        mAddBrand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    FragmentHelper.replaceChildFragment(SellFragment.this, SellSetProductTypeFragment
-                            .newInstance(SellSetProductTypeFragment.MODE_BRAND, view.findViewById(
-                                    R.id.add_brand_fl).getTop() - mScrollView.getScrollY()));
-                    mAddBrand.setVisibility(View.INVISIBLE);
-                    mForeground.animate().alpha(1f);
-                }
+        mAddBrand.setOnClickListener(v -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                FragmentHelper.replaceChildFragment(SellFragment.this, SellSetProductTypeFragment
+                        .newInstance(SellSetProductTypeFragment.MODE_BRAND, view.findViewById(
+                                R.id.add_brand_fl).getTop() - mScrollView.getScrollY()));
+                mAddBrand.setVisibility(View.INVISIBLE);
+                mForeground.animate().alpha(1f);
             }
         });
         mAddProductTypePlus = view.findViewById(R.id.add_product_type_plus);
-        mAddProductTypePlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAddProductType.performClick();
-            }
-        });
+        mAddProductTypePlus.setOnClickListener(view17 -> mAddProductType.performClick());
         mAddBrandPlus = view.findViewById(R.id.add_brand_plus);
-        mAddBrandPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAddBrand.performClick();
-            }
-        });
+        mAddBrandPlus.setOnClickListener(view16 -> mAddBrand.performClick());
 
         mAddProductTypeLayout = view.findViewById(R.id.add_product_type_result_fl);
-        mAddProductTypeResult = (TextView) view.findViewById(R.id.add_product_type_result);
-        view.findViewById(R.id.add_product_type_result_clear).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mProduct.setProductType(null);
-                mProduct.setSize(null);
-                mProduct.setCategoryId(null);
-                mProduct.setSizePosition(-1);
-                mProduct.setSizeScalePosition(-1);
+        mAddProductTypeResult = view.findViewById(R.id.add_product_type_result);
+        view.findViewById(R.id.add_product_type_result_clear).setOnClickListener(view15 -> {
+            mProduct.setProductType(null);
+            mProduct.setSize(null);
+            mProduct.setCategoryId(null);
+            mProduct.setSizePosition(-1);
+            mProduct.setSizeScalePosition(-1);
 
-                setAddProductTypeResult(null);
+            setAddProductTypeResult(null);
 
-                setCategoryVisibility();
-                setSizeVisibility();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (SellFragment.this.isAdded() && mSizePager.getAdapter() != null) {
-                            ((SizeAdapter) mSizePager.getAdapter()).clearAll();
-                            mSizePager.removeAllViews();
-                            mSizePager.setAdapter(null);
-                        }
-                    }
-                }, 200);
-            }
+            setCategoryVisibility();
+            setSizeVisibility();
+            new Handler().postDelayed(() -> {
+                if (SellFragment.this.isAdded() && mSizePager.getAdapter() != null) {
+                    ((SizeAdapter) mSizePager.getAdapter()).clearAll();
+                    mSizePager.removeAllViews();
+                    mSizePager.setAdapter(null);
+                }
+            }, 200);
         });
 
         mAddBrandLayout = view.findViewById(R.id.add_brand_result_fl);
-        mAddBrandResult = (TextView) view.findViewById(R.id.add_brand_result);
-        view.findViewById(R.id.add_brand_result_clear).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mProduct.setBrand(null);
-                setAddBrandResult(null);
-            }
+        mAddBrandResult = view.findViewById(R.id.add_brand_result);
+        view.findViewById(R.id.add_brand_result_clear).setOnClickListener(view14 -> {
+            mProduct.setBrand(null);
+            setAddBrandResult(null);
         });
 
         mSizeTitle = view.findViewById(R.id.size_title);
-        mSizePager = (ViewPager) view.findViewById(R.id.size_pager);
+        mSizePager = view.findViewById(R.id.size_pager);
         mSizePager.setPageTransformer(false, new SellSizePageTransformer());
         mSizePager.setOffscreenPageLimit(6);
         mSizePager.setPageMargin(-(DisplayHelper.getScreenResolution(getActivity())[0] -
@@ -212,54 +187,45 @@ public class SellFragment extends Fragment implements ActionView.ActionClickList
         });
 
         mCategoryTitle = view.findViewById(R.id.category_title);
-        mCategoryGrid = (FlowLayout) view.findViewById(R.id.category_grid);
+        mCategoryGrid = view.findViewById(R.id.category_grid);
 
-        mTagGrid = (FlowLayout) view.findViewById(R.id.tags_grid);
-        mTagGrid.findViewById(R.id.add_tag).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TagsDialog td = new TagsDialog();
-                if (mProduct.getTags() != null && mProduct.getTags().size() > 0) {
-                    td.setDefaultTags(mProduct.getTags());
-                }
-                td.setTagsAddedListener(SellFragment.this);
-                td.show(getActivity().getSupportFragmentManager(), td.getClass().getSimpleName());
+        mTagGrid = view.findViewById(R.id.tags_grid);
+        mTagGrid.findViewById(R.id.add_tag).setOnClickListener(v -> {
+            TagsDialog td = new TagsDialog();
+            if (mProduct.getTags() != null && mProduct.getTags().size() > 0) {
+                td.setDefaultTags(mProduct.getTags());
             }
+            td.setTagsAddedListener(SellFragment.this);
+            td.show(getActivity().getSupportFragmentManager(), td.getClass().getSimpleName());
         });
 
-        mAttachedPhotoCount = (TextView) view.findViewById(R.id.photo_count);
+        mAttachedPhotoCount = view.findViewById(R.id.photo_count);
 
-        mPhoto = (ImageButton) view.findViewById(R.id.add_photo);
-        mPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mPhoto = view.findViewById(R.id.add_photo);
+        mPhoto.setOnClickListener(view13 -> {
 //                AddPhotoDialog apd = new AddPhotoDialog();
 //                if (mProduct.getLocalPhotos() != null && mProduct.getLocalPhotos().size() > 0) {
 //                    apd.setPhotos(mProduct.getLocalPhotos());
 //                }
 //                apd.setPhotoSelectListener(SellFragment.this);
 //                apd.show(getActivity().getSupportFragmentManager(), apd.getClass().getSimpleName());
-                Intent addPhotoIntent = new Intent(getActivity(), AddPhotoActivity.class);
-                if (mProduct.getLocalPhotos() != null) {
-                    addPhotoIntent.putExtra(AddPhotoActivity.EXTRA_PHOTO_LIST_INCOME,
-                            mProduct.getLocalPhotos());
-                }
-                getActivity().startActivityForResult(addPhotoIntent, MainActivity.REQUEST_SELL_ADD_PHOTO);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            Intent addPhotoIntent = new Intent(getActivity(), AddPhotoActivity.class);
+            if (mProduct.getLocalPhotos() != null) {
+                addPhotoIntent.putExtra(AddPhotoActivity.EXTRA_PHOTO_LIST_INCOME,
+                        mProduct.getLocalPhotos());
             }
+            getActivity().startActivityForResult(addPhotoIntent, MainActivity.REQUEST_SELL_ADD_PHOTO);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
-        mContact = (ImageButton) view.findViewById(R.id.add_contacts);
-        mContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddContactsDialog acd = new AddContactsDialog();
-                acd.setContactsListener(SellFragment.this);
-                if (mProduct.getContactInfo() != null) {
-                    acd.setContactInfo(mProduct.getContactInfo());
-                }
-                acd.show(getActivity().getSupportFragmentManager(), acd.getClass().getSimpleName());
+        mContact = view.findViewById(R.id.add_contacts);
+        mContact.setOnClickListener(view12 -> {
+            AddContactsDialog acd = new AddContactsDialog();
+            acd.setContactsListener(SellFragment.this);
+            if (mProduct.getContactInfo() != null) {
+                acd.setContactInfo(mProduct.getContactInfo());
             }
+            acd.show(getActivity().getSupportFragmentManager(), acd.getClass().getSimpleName());
         });
 
         if (mProduct == null) {
@@ -292,12 +258,9 @@ public class SellFragment extends Fragment implements ActionView.ActionClickList
         setSizeVisibility();
         setCategoryVisibility();
 
-        view.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkFields();
+        view.findViewById(R.id.next).setOnClickListener(view1 -> {
+            checkFields();
 //                goToNextPage();
-            }
         });
 
         if (getChildFragmentManager().getBackStackEntryCount() > 0) {
@@ -415,9 +378,8 @@ public class SellFragment extends Fragment implements ActionView.ActionClickList
 
                     Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>)
                             dataSnapshot.getValue();
-                    Iterator it = map.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
+                    for (Object o : map.entrySet()) {
+                        Map.Entry pair = (Map.Entry) o;
                         mCategories.add(new Category(pair.getKey(), (Map<String, Object>) pair.getValue()));
                     }
 
@@ -449,7 +411,7 @@ public class SellFragment extends Fragment implements ActionView.ActionClickList
             }
             View v = getActivity().getLayoutInflater().inflate(R.layout.item_sell_category, null);
             v.setLayoutParams(param);
-            CheckBox cb = (CheckBox) v.findViewById(R.id.title);
+            CheckBox cb = v.findViewById(R.id.title);
             if (mProduct.getCategoryId() != null && mProduct.getCategoryId().equals(c.getId())) {
                 cb.setChecked(true);
             } else {
@@ -473,7 +435,7 @@ public class SellFragment extends Fragment implements ActionView.ActionClickList
             if (isChecked) {
                 mProduct.setCategoryId(buttonView.getTag().toString());
                 for (int i = 0; i < mCategoryGrid.getChildCount(); i++) {
-                    CheckBox cb = (CheckBox) mCategoryGrid.getChildAt(i).findViewById(R.id.title);
+                    CheckBox cb = mCategoryGrid.getChildAt(i).findViewById(R.id.title);
                     if (!buttonView.getTag().equals(cb.getTag()) && cb.isChecked()) {
                         cb.setChecked(false);
                     }
@@ -571,15 +533,10 @@ public class SellFragment extends Fragment implements ActionView.ActionClickList
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.item_add_tag, null);
         v.setLayoutParams(param);
-        TextView tv = (TextView) v.findViewById(R.id.title);
+        TextView tv = v.findViewById(R.id.title);
         tv.setText(tag);
         tv.setTag(v);
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTagGrid.removeView((View) v.getTag());
-            }
-        });
+        tv.setOnClickListener(v1 -> mTagGrid.removeView((View) v1.getTag()));
         mTagGrid.addView(v, mTagGrid.getChildCount() - 1);
     }
 

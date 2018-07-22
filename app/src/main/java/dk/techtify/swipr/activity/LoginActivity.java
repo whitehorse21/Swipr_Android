@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.facebook.AccessToken;
@@ -18,18 +17,12 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,7 +37,6 @@ import com.google.firebase.storage.UploadTask;
 import com.onesignal.OneSignal;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -89,6 +81,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private File mJustCapturedPhotoFile;
 
+    private FirebaseAuth.AuthStateListener mAuthListener = firebaseAuth -> {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            if (AppConfig.DEBUG) {
+                Log.d("FIREBASE AUTH", "onAuthStateChanged:signed_in:" + user.getUid());
+            }
+        } else {
+            if (AppConfig.DEBUG) {
+                Log.d("FIREBASE AUTH", "onAuthStateChanged:signed_out");
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,55 +123,51 @@ public class LoginActivity extends AppCompatActivity {
 
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
+                        (object, response) -> {
+                            try {
+                                if (AppConfig.DEBUG && object != null) {
+                                    Log.d("FACEBOOK", object.toString());
+                                }
 
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                try {
-                                    if (AppConfig.DEBUG && object != null) {
-                                        Log.d("FACEBOOK", object.toString());
-                                    }
-
-                                    if (object == null || !object.has("first_name")
-                                            || !object.has("last_name") || !object.has("email")
-                                            || object.getString("first_name").length() < 1
-                                            || object.getString("last_name").length() < 1
-                                            || object.getString("email").length() < 1) {
-                                        progress.dismiss();
-                                        DialogHelper.showDialogWithCloseAndDone(LoginActivity.this,
-                                                R.string.warning, R.string.error_unknown, null);
-                                        return;
-                                    }
-
-                                    final String firstName = object.getString("first_name");
-                                    final String lastName = object.getString("last_name");
-                                    final String email = object.getString("email");
-
-                                    if (object.has("picture") && object.getJSONObject("picture").has("data")
-                                            && object.getJSONObject("picture").getJSONObject("data").has("url")) {
-                                        BitmapHelper.getBitmapFromUrl(object.getJSONObject("picture")
-                                                .getJSONObject("data").getString("url"), new BitmapHelper.LoadCompleteListener() {
-                                            @Override
-                                            public void onLoadComplete(String path, Bitmap bitmap) {
-                                                loginWithFacebook(loginResult.getAccessToken(), progress,
-                                                        firstName, lastName, email, bitmap);
-                                            }
-
-                                            @Override
-                                            public void onError() {
-                                                loginWithFacebook(loginResult.getAccessToken(), progress,
-                                                        firstName, lastName, email, null);
-                                            }
-                                        });
-                                    } else {
-                                        loginWithFacebook(loginResult.getAccessToken(), progress,
-                                                firstName, lastName, email, null);
-                                    }
-                                } catch (JSONException e) {
+                                if (object == null || !object.has("first_name")
+                                        || !object.has("last_name") || !object.has("email")
+                                        || object.getString("first_name").length() < 1
+                                        || object.getString("last_name").length() < 1
+                                        || object.getString("email").length() < 1) {
                                     progress.dismiss();
                                     DialogHelper.showDialogWithCloseAndDone(LoginActivity.this,
                                             R.string.warning, R.string.error_unknown, null);
+                                    return;
                                 }
+
+                                final String firstName = object.getString("first_name");
+                                final String lastName = object.getString("last_name");
+                                final String email = object.getString("email");
+
+                                if (object.has("picture") && object.getJSONObject("picture").has("data")
+                                        && object.getJSONObject("picture").getJSONObject("data").has("url")) {
+                                    BitmapHelper.getBitmapFromUrl(object.getJSONObject("picture")
+                                            .getJSONObject("data").getString("url"), new BitmapHelper.LoadCompleteListener() {
+                                        @Override
+                                        public void onLoadComplete(String path, Bitmap bitmap) {
+                                            loginWithFacebook(loginResult.getAccessToken(), progress,
+                                                    firstName, lastName, email, bitmap);
+                                        }
+
+                                        @Override
+                                        public void onError() {
+                                            loginWithFacebook(loginResult.getAccessToken(), progress,
+                                                    firstName, lastName, email, null);
+                                        }
+                                    });
+                                } else {
+                                    loginWithFacebook(loginResult.getAccessToken(), progress,
+                                            firstName, lastName, email, null);
+                                }
+                            } catch (JSONException e) {
+                                progress.dismiss();
+                                DialogHelper.showDialogWithCloseAndDone(LoginActivity.this,
+                                        R.string.warning, R.string.error_unknown, null);
                             }
                         });
                 Bundle parameters = new Bundle();
@@ -207,46 +208,43 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (AppConfig.DEBUG) {
-                    Log.d("FIREBASE AUTH", "signInWithCredential:onComplete:" + task.isSuccessful());
-                }
-                LoginManager.getInstance().logOut();
-
-                if (!task.isSuccessful()) {
-                    if (AppConfig.DEBUG) {
-                        Log.w("FIREBASE AUTH", "signInWithCredential", task.getException());
-                    }
-                    progress.dismiss();
-                    DialogHelper.showDialogWithCloseAndDone(LoginActivity.this,
-                            R.string.warning, task.getException() != null && task.getException()
-                                    .getMessage() != null ? task.getException().getMessage() :
-                                    getString(R.string.error_unknown), null);
-                    return;
-                }
-
-                mDatabase.child("user-data").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot == null || dataSnapshot.getValue() == null) {
-                            // should add facebook user to database
-                            uploadPhotoBeforeUserCreation(progress, firstName, lastName, email, photo, 0);
-                        } else {
-                            uploadFacebookPhotoBeforeLogin(progress, photo);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        progress.dismiss();
-                        DialogHelper.showDialogWithCloseAndDone(LoginActivity.this, R.string.warning,
-                                databaseError.getMessage() != null ? databaseError.getMessage() :
-                                        getString(R.string.error_unknown), null);
-                    }
-                });
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+            if (AppConfig.DEBUG) {
+                Log.d("FIREBASE AUTH", "signInWithCredential:onComplete:" + task.isSuccessful());
             }
+            LoginManager.getInstance().logOut();
+
+            if (!task.isSuccessful()) {
+                if (AppConfig.DEBUG) {
+                    Log.w("FIREBASE AUTH", "signInWithCredential", task.getException());
+                }
+                progress.dismiss();
+                DialogHelper.showDialogWithCloseAndDone(LoginActivity.this,
+                        R.string.warning, task.getException() != null && task.getException()
+                                .getMessage() != null ? task.getException().getMessage() :
+                                getString(R.string.error_unknown), null);
+                return;
+            }
+
+            mDatabase.child("user-data").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot == null || dataSnapshot.getValue() == null) {
+                        // should add facebook user to database
+                        uploadPhotoBeforeUserCreation(progress, firstName, lastName, email, photo, 0);
+                    } else {
+                        uploadFacebookPhotoBeforeLogin(progress, photo);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    progress.dismiss();
+                    DialogHelper.showDialogWithCloseAndDone(LoginActivity.this, R.string.warning,
+                            databaseError.getMessage() != null ? databaseError.getMessage() :
+                                    getString(R.string.error_unknown), null);
+                }
+            });
         });
     }
 
@@ -254,24 +252,21 @@ public class LoginActivity extends AppCompatActivity {
         final AlertDialog progress = DialogHelper.getProgressDialog(this);
         DialogHelper.showProgressDialog(this, progress);
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (AppConfig.DEBUG) {
-                            Log.d("FIREBASE AUTH", "signInWithEmail:onComplete:" + task.isSuccessful());
-                        }
-
-                        if (!task.isSuccessful()) {
-                            progress.dismiss();
-                            DialogHelper.showDialogWithCloseAndDone(LoginActivity.this, R.string.warning,
-                                    task.getException() != null && task.getException()
-                                            .getMessage() != null ? task.getException().getMessage() :
-                                            getString(R.string.error_unknown), null);
-                            return;
-                        }
-
-                        getUserFromDatabase(progress);
+                .addOnCompleteListener(this, task -> {
+                    if (AppConfig.DEBUG) {
+                        Log.d("FIREBASE AUTH", "signInWithEmail:onComplete:" + task.isSuccessful());
                     }
+
+                    if (!task.isSuccessful()) {
+                        progress.dismiss();
+                        DialogHelper.showDialogWithCloseAndDone(LoginActivity.this, R.string.warning,
+                                task.getException() != null && task.getException()
+                                        .getMessage() != null ? task.getException().getMessage() :
+                                        getString(R.string.error_unknown), null);
+                        return;
+                    }
+
+                    getUserFromDatabase(progress);
                 });
     }
 
@@ -279,24 +274,21 @@ public class LoginActivity extends AppCompatActivity {
         final AlertDialog progress = DialogHelper.getProgressDialog(this);
         DialogHelper.showProgressDialog(LoginActivity.this, progress);
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (AppConfig.DEBUG) {
-                            Log.d("FIREBASE AUTH", "createUserWithEmail:onComplete:" + task.isSuccessful());
-                        }
-
-                        if (!task.isSuccessful()) {
-                            progress.dismiss();
-                            DialogHelper.showDialogWithCloseAndDone(LoginActivity.this, R.string.warning,
-                                    task.getException() != null && task.getException()
-                                            .getMessage() != null ? task.getException().getMessage() :
-                                            getString(R.string.error_unknown), null);
-                            return;
-                        }
-
-                        uploadPhotoBeforeUserCreation(progress, firstName, lastName, email, mPhotoBitmap, gender);
+                .addOnCompleteListener(this, task -> {
+                    if (AppConfig.DEBUG) {
+                        Log.d("FIREBASE AUTH", "createUserWithEmail:onComplete:" + task.isSuccessful());
                     }
+
+                    if (!task.isSuccessful()) {
+                        progress.dismiss();
+                        DialogHelper.showDialogWithCloseAndDone(LoginActivity.this, R.string.warning,
+                                task.getException() != null && task.getException()
+                                        .getMessage() != null ? task.getException().getMessage() :
+                                        getString(R.string.error_unknown), null);
+                        return;
+                    }
+
+                    uploadPhotoBeforeUserCreation(progress, firstName, lastName, email, mPhotoBitmap, gender);
                 });
     }
 
@@ -312,24 +304,9 @@ public class LoginActivity extends AppCompatActivity {
         final StorageReference mountainsRef = storageRef.child("user-data/" + mAuth.getCurrentUser().getUid() + "/profilePicture.png");
 
         UploadTask uploadTask = mountainsRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                getUserFromDatabase(progress);
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                mDatabase.child("user-data").child(mAuth.getCurrentUser().getUid()).child("photoUrl")
-                        .setValue(mountainsRef.getDownloadUrl().getResult().toString().split("\\?")[0])
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                getUserFromDatabase(progress);
-                            }
-                        });
-            }
-        });
+        uploadTask.addOnFailureListener(exception -> getUserFromDatabase(progress)).addOnSuccessListener(taskSnapshot -> mDatabase.child("user-data").child(mAuth.getCurrentUser().getUid()).child("photoUrl")
+                .setValue(mountainsRef.getDownloadUrl().getResult().toString().split("\\?")[0])
+                .addOnCompleteListener(task -> getUserFromDatabase(progress)));
     }
 
     private void uploadPhotoBeforeUserCreation(final AlertDialog progress, final String firstName, final String lastName, final String email, Bitmap photo, final int gender) {
@@ -345,69 +322,27 @@ public class LoginActivity extends AppCompatActivity {
         final StorageReference mountainsRef = storageRef.child("user-data/" + mAuth.getCurrentUser().getUid() + "/profilePicture.png");
 
         UploadTask uploadTask = mountainsRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                createUser(progress, firstName, lastName, email, null, gender);
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                createUser(progress, firstName, lastName, email, mountainsRef.getDownloadUrl().getResult().toString().split("\\?")[0], gender);
-            }
-        });
+        uploadTask.addOnFailureListener(exception -> createUser(progress, firstName, lastName, email, null, gender)).addOnSuccessListener(taskSnapshot -> createUser(progress, firstName, lastName, email, mountainsRef.getDownloadUrl().getResult().toString().split("\\?")[0], gender));
     }
 
     private void createUser(final AlertDialog progress, String firstName, String lastName, String email, String photoUrl, int gender) {
         mDatabase.child("user-data").child(mAuth.getCurrentUser().getUid()).setValue(User
                 .mapOfNewUser(firstName, lastName, email, photoUrl, gender))
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (AppConfig.DEBUG) {
-                            Log.d("FIREBASE AUTH", "createUserWithEmail:onComplete:" + task.isSuccessful());
-                        }
-
-                        if (!task.isSuccessful()) {
-                            progress.dismiss();
-                            DialogHelper.showDialogWithCloseAndDone(LoginActivity.this, R.string.warning,
-                                    task.getException() != null && task.getException()
-                                            .getMessage() != null ? task.getException().getMessage() :
-                                            getString(R.string.error_unknown), null);
-                            return;
-                        }
-
-                        getUserFromDatabase(progress);
+                .addOnCompleteListener(task -> {
+                    if (AppConfig.DEBUG) {
+                        Log.d("FIREBASE AUTH", "createUserWithEmail:onComplete:" + task.isSuccessful());
                     }
-                });
-    }
 
-    public void anonymousLogin() {
-        final AlertDialog progress = DialogHelper.getProgressDialog(LoginActivity.this);
-        DialogHelper.showProgressDialog(LoginActivity.this, progress);
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (AppConfig.DEBUG) {
-                            Log.d("FIREBASE AUTH", "signInAnonymously:onComplete:" + task.isSuccessful());
-                        }
-
+                    if (!task.isSuccessful()) {
                         progress.dismiss();
-
-                        if (!task.isSuccessful()) {
-                            if (AppConfig.DEBUG) {
-                                Log.w("FIREBASE AUTH", "signInAnonymously", task.getException());
-                            }
-                            DialogHelper.showDialogWithCloseAndDone(LoginActivity.this,
-                                    R.string.warning, task.getException() != null && task.getException()
-                                            .getMessage() != null ? task.getException().getMessage() :
-                                            getString(R.string.error_unknown), null);
-                            return;
-                        }
-
-                        getUserFromDatabase(progress);
+                        DialogHelper.showDialogWithCloseAndDone(LoginActivity.this, R.string.warning,
+                                task.getException() != null && task.getException()
+                                        .getMessage() != null ? task.getException().getMessage() :
+                                        getString(R.string.error_unknown), null);
+                        return;
                     }
+
+                    getUserFromDatabase(progress);
                 });
     }
 
@@ -455,22 +390,31 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
+    public void anonymousLogin() {
+        final AlertDialog progress = DialogHelper.getProgressDialog(LoginActivity.this);
+        DialogHelper.showProgressDialog(LoginActivity.this, progress);
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, task -> {
+                    if (AppConfig.DEBUG) {
+                        Log.d("FIREBASE AUTH", "signInAnonymously:onComplete:" + task.isSuccessful());
+                    }
 
-        @Override
-        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                if (AppConfig.DEBUG) {
-                    Log.d("FIREBASE AUTH", "onAuthStateChanged:signed_in:" + user.getUid());
-                }
-            } else {
-                if (AppConfig.DEBUG) {
-                    Log.d("FIREBASE AUTH", "onAuthStateChanged:signed_out");
-                }
-            }
-        }
-    };
+                    progress.dismiss();
+
+                    if (!task.isSuccessful()) {
+                        if (AppConfig.DEBUG) {
+                            Log.w("FIREBASE AUTH", "signInAnonymously", task.getException());
+                        }
+                        DialogHelper.showDialogWithCloseAndDone(LoginActivity.this,
+                                R.string.warning, task.getException() != null && task.getException()
+                                        .getMessage() != null ? task.getException().getMessage() :
+                                        getString(R.string.error_unknown), null);
+                        return;
+                    }
+
+                    getUserFromDatabase(progress);
+                });
+    }
 
     @Override
     public void onStart() {

@@ -1,8 +1,6 @@
 package dk.techtify.swipr.dialog.sell;
 
-import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 
 import dk.techtify.swipr.AppConfig;
@@ -50,24 +46,16 @@ public class SendForReviewDialog extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_sell_send_for_review, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view12 -> getDialog().dismiss());
 
         ((TextView) view.findViewById(R.id.title)).setText(mMode == MODE_PRODUCT_TYPE ?
                 R.string.send_product_for_review : R.string.send_brand_for_review);
 
         ((TextView) view.findViewById(R.id.product_name)).setText(mSellProduct.getName());
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    sendForReview();
-                }
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                sendForReview();
             }
         });
 
@@ -83,25 +71,22 @@ public class SendForReviewDialog extends BaseDialog {
         mSellProduct.setId(key);
         FirebaseDatabase.getInstance().getReference().child(mMode == MODE_PRODUCT_TYPE ?
                 "review-product-type" : "review-brand").child(key).setValue(mSellProduct.getName())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (AppConfig.DEBUG) {
-                            Log.d("FIREBASE DATABASE", "sendProductForReview:onComplete:" + task.isSuccessful());
-                        }
-
-                        progress.dismiss();
-                        if (!task.isSuccessful()) {
-                            DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                                    task.getException() != null && task.getException()
-                                            .getMessage() != null ? task.getException().getMessage() :
-                                            getString(R.string.error_unknown), null);
-                            return;
-                        }
-
-                        mSendingListener.onSendingForReviewSuccessful(mSellProduct);
-                        getDialog().dismiss();
+                .addOnCompleteListener(task -> {
+                    if (AppConfig.DEBUG) {
+                        Log.d("FIREBASE DATABASE", "sendProductForReview:onComplete:" + task.isSuccessful());
                     }
+
+                    progress.dismiss();
+                    if (!task.isSuccessful()) {
+                        DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                                task.getException() != null && task.getException()
+                                        .getMessage() != null ? task.getException().getMessage() :
+                                        getString(R.string.error_unknown), null);
+                        return;
+                    }
+
+                    mSendingListener.onSendingForReviewSuccessful(mSellProduct);
+                    getDialog().dismiss();
                 });
     }
 

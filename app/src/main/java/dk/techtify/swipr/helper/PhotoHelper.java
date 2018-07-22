@@ -32,12 +32,7 @@ public class PhotoHelper {
     public static void checkGalleryPermission(final FragmentActivity activity) {
         PermissionHelper.requestPermissions(activity,
                 REQUEST_PERMISSION_GALLERY,
-                new PermissionHelper.PermissionsChecker() {
-                    @Override
-                    public void allPermissionsGranted() {
-                        openGallery(activity);
-                    }
-                }, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                () -> openGallery(activity), Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     public static void openGallery(FragmentActivity activity) {
@@ -65,12 +60,7 @@ public class PhotoHelper {
     public static void checkCameraPermission(final FragmentActivity activity) {
         PermissionHelper.requestPermissions(activity,
                 REQUEST_PERMISSION_CAMERA,
-                new PermissionHelper.PermissionsChecker() {
-                    @Override
-                    public void allPermissionsGranted() {
-                        openCamera(activity);
-                    }
-                }, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                () -> openCamera(activity), Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     public static void openCamera(FragmentActivity activity) {

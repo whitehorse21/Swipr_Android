@@ -3,7 +3,6 @@ package dk.techtify.swipr.dialog.sell;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.wefika.flowlayout.FlowLayout;
 
 import java.util.ArrayList;
 
-import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.dialog.BaseDialog;
 import dk.techtify.swipr.helper.DialogHelper;
@@ -47,29 +45,14 @@ public class TagsDialog extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_sell_tags, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view12 -> getDialog().dismiss());
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> getDialog().dismiss());
 
-        mFlow = (FlowLayout) view.findViewById(R.id.flow);
+        mFlow = view.findViewById(R.id.flow);
 
-        mEditable = (EditText) view.findViewById(R.id.editable);
-        mEditable.post(new Runnable() {
-            @Override
-            public void run() {
-                IoHelper.showKeyboard(getActivity(), mEditable);
-            }
-        });
+        mEditable = view.findViewById(R.id.editable);
+        mEditable.post(() -> IoHelper.showKeyboard(getActivity(), mEditable));
         mEditable.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -89,30 +72,27 @@ public class TagsDialog extends BaseDialog {
 
             }
         });
-        mEditable.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE && mEditable.getText().toString().trim()
-                        .length() > 0) {
+        mEditable.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE && mEditable.getText().toString().trim()
+                    .length() > 0) {
 
-                    String newTag = mEditable.getText().toString().trim();
-                    if (mDefaultTags.contains(newTag)) {
-                        DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                                R.string.this_tag_already_added, null);
-                        return true;
-                    }
-                    mDefaultTags.add(newTag);
-
-                    mTagModifiedListener.onTagAdded(newTag);
-
-                    addTagView(newTag);
-
-                    mEditable.setText("");
-
+                String newTag = mEditable.getText().toString().trim();
+                if (mDefaultTags.contains(newTag)) {
+                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                            R.string.this_tag_already_added, null);
                     return true;
                 }
-                return false;
+                mDefaultTags.add(newTag);
+
+                mTagModifiedListener.onTagAdded(newTag);
+
+                addTagView(newTag);
+
+                mEditable.setText("");
+
+                return true;
             }
+            return false;
         });
 
         if (mDefaultTags != null) {
@@ -132,15 +112,12 @@ public class TagsDialog extends BaseDialog {
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.item_add_tag, null);
         v.setLayoutParams(param);
-        TextView tv = (TextView) v.findViewById(R.id.title);
+        TextView tv = v.findViewById(R.id.title);
         tv.setText(tag);
         tv.setTag(v);
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mFlow.removeView((View) v.getTag());
-                mTagModifiedListener.onTagRemoved(((TextView) v).getText().toString());
-            }
+        tv.setOnClickListener(v1 -> {
+            mFlow.removeView((View) v1.getTag());
+            mTagModifiedListener.onTagRemoved(((TextView) v1).getText().toString());
         });
         mFlow.addView(v);
     }

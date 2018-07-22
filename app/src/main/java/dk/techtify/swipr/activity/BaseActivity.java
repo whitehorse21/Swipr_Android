@@ -3,12 +3,9 @@ package dk.techtify.swipr.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,7 +15,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -128,7 +124,7 @@ public class BaseActivity extends AppCompatActivity {
                             }
 
                             Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                            IncomingBid ib = new IncomingBid(dataSnapshot.getKey().toString(), map);
+                            IncomingBid ib = new IncomingBid(dataSnapshot.getKey(), map);
                             if (sBoughtItems == null) {
                                 sBoughtItems = new ArrayList<>();
                             }
@@ -165,7 +161,7 @@ public class BaseActivity extends AppCompatActivity {
                     }
 
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    IncomingBid ib = new IncomingBid(dataSnapshot.getKey().toString(), map);
+                    IncomingBid ib = new IncomingBid(dataSnapshot.getKey(), map);
                     if (sOutgoingBids == null) {
                         sOutgoingBids = new ArrayList<>();
                     }
@@ -190,7 +186,7 @@ public class BaseActivity extends AppCompatActivity {
                     }
 
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    IncomingBid ib = new IncomingBid(dataSnapshot.getKey().toString(), map);
+                    IncomingBid ib = new IncomingBid(dataSnapshot.getKey(), map);
                     if (sOutgoingBids != null && sOutgoingBids.contains(ib.getProductId())) {
                         sOutgoingBids.remove(ib.getProductId());
                         Counters.getInstance().decreaseOutgoingBidsCount();
@@ -238,7 +234,7 @@ public class BaseActivity extends AppCompatActivity {
         public void onDataChange(DataSnapshot dataSnapshot) {
             Map<String, Object> map = dataSnapshot != null && dataSnapshot.getValue()
                     != null ? (Map<String, Object>) dataSnapshot.getValue() :
-                    new HashMap<String, Object>();
+                    new HashMap<>();
 
             Counters.getInstance().update(map);
         }
@@ -349,34 +345,28 @@ public class BaseActivity extends AppCompatActivity {
         childUpdates.put("bid-outgoing/" + bid.getBidderId() + "/" + bid.getId() + "/status", IncomingBid.STATUS_DECLINED);
         childUpdates.put("bid-incoming/" + User.getLocalUser().getId() + "/" + bid.getId() + "/status", IncomingBid.STATUS_DECLINED);
 
-        database.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    DialogHelper.showDialogWithCloseAndDone(BaseActivity.this, R.string.warning, task
-                            .getException() != null && task.getException().getMessage() != null ?
-                            task.getException().getMessage() : getString(R.string.error_unknown), null);
-                }
+        database.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                DialogHelper.showDialogWithCloseAndDone(BaseActivity.this, R.string.warning, task
+                        .getException() != null && task.getException().getMessage() != null ?
+                        task.getException().getMessage() : getString(R.string.error_unknown), null);
+            }
 
-                if (bidder == null) {
-                    FirebaseHelper.getBidder(bid.getBidderId(), new FirebaseHelper.OnResultListener() {
-                        @Override
-                        public void onResult(Object o) {
-                            FirebaseHelper.sendActionBidMessage(getString(R.string.the_bid_declined).toUpperCase(),
-                                    bid, (SellerBuyer) o, MessageContent.TYPE_BID_DECLINED);
-                            String mess = bid.getDeclineMessage();
-                            if (mess != null && mess.trim().length() > 0) {
-                                FirebaseHelper.sendActionBidMessage(mess.trim(), bid, (SellerBuyer) o, 0);
-                            }
-                        }
-                    });
-                } else {
+            if (bidder == null) {
+                FirebaseHelper.getBidder(bid.getBidderId(), o -> {
                     FirebaseHelper.sendActionBidMessage(getString(R.string.the_bid_declined).toUpperCase(),
-                            bid, bidder, MessageContent.TYPE_BID_DECLINED);
+                            bid, (SellerBuyer) o, MessageContent.TYPE_BID_DECLINED);
                     String mess = bid.getDeclineMessage();
                     if (mess != null && mess.trim().length() > 0) {
-                        FirebaseHelper.sendActionBidMessage(mess.trim(), bid, bidder, 0);
+                        FirebaseHelper.sendActionBidMessage(mess.trim(), bid, (SellerBuyer) o, 0);
                     }
+                });
+            } else {
+                FirebaseHelper.sendActionBidMessage(getString(R.string.the_bid_declined).toUpperCase(),
+                        bid, bidder, MessageContent.TYPE_BID_DECLINED);
+                String mess = bid.getDeclineMessage();
+                if (mess != null && mess.trim().length() > 0) {
+                    FirebaseHelper.sendActionBidMessage(mess.trim(), bid, bidder, 0);
                 }
             }
         });
@@ -400,38 +390,25 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         }
-        database.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    DialogHelper.showDialogWithCloseAndDone(BaseActivity.this, R.string.warning, task
-                            .getException() != null && task.getException().getMessage() != null ?
-                            task.getException().getMessage() : getString(R.string.error_unknown), null);
-                }
+        database.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                DialogHelper.showDialogWithCloseAndDone(BaseActivity.this, R.string.warning, task
+                        .getException() != null && task.getException().getMessage() != null ?
+                        task.getException().getMessage() : getString(R.string.error_unknown), null);
+            }
 
-                FirebaseHelper.deleteMyProduct(bid.getSellerId(), bid.getProductId(), null);
+            FirebaseHelper.deleteMyProduct(bid.getSellerId(), bid.getProductId(), null);
 
-                FirebaseHelper.increaseCounter(User.getLocalUser().getId(), "sold", new FirebaseHelper.OnSuccessListener() {
-                    @Override
-                    public void onSuccess() {
-                        FirebaseHelper.increaseCounter(bid.getBidderId(), "purchased");
-                    }
-                });
+            FirebaseHelper.increaseCounter(User.getLocalUser().getId(), "sold", () -> FirebaseHelper.increaseCounter(bid.getBidderId(), "purchased"));
 
-                for (IncomingBid ib : theseBids) {
-                    if (ib.getId().equals(bid.getId())) {
-                        FirebaseHelper.sendActionBidMessage(getString(R.string.the_bid_accepted).toUpperCase(),
-                                bid, bidder, MessageContent.TYPE_BID_ACCEPTED);
-                        FirebaseHelper.sendActionBidMessage(StringHelper.getMyAddress(), bid, bidder, 0);
-                    } else {
-                        FirebaseHelper.getBidder(ib.getBidderId(), new FirebaseHelper.OnResultListener() {
-                            @Override
-                            public void onResult(Object o) {
-                                FirebaseHelper.sendActionBidMessage(getString(R.string.the_bid_declined).toUpperCase(),
-                                        bid, (SellerBuyer) o, MessageContent.TYPE_BID_DECLINED);
-                            }
-                        });
-                    }
+            for (IncomingBid ib : theseBids) {
+                if (ib.getId().equals(bid.getId())) {
+                    FirebaseHelper.sendActionBidMessage(getString(R.string.the_bid_accepted).toUpperCase(),
+                            bid, bidder, MessageContent.TYPE_BID_ACCEPTED);
+                    FirebaseHelper.sendActionBidMessage(StringHelper.getMyAddress(), bid, bidder, 0);
+                } else {
+                    FirebaseHelper.getBidder(ib.getBidderId(), o -> FirebaseHelper.sendActionBidMessage(getString(R.string.the_bid_declined).toUpperCase(),
+                            bid, (SellerBuyer) o, MessageContent.TYPE_BID_DECLINED));
                 }
             }
         });
@@ -444,27 +421,19 @@ public class BaseActivity extends AppCompatActivity {
         childUpdates.put("bid-incoming/" + bid.getSellerId() + "/" + bid.getId() + "/status", IncomingBid.STATUS_CANCELED);
         childUpdates.put("bid-outgoing/" + User.getLocalUser().getId() + "/" + bid.getId() + "/status", IncomingBid.STATUS_CANCELED);
 
-        database.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    DialogHelper.showDialogWithCloseAndDone(BaseActivity.this, R.string.warning, task
-                            .getException() != null && task.getException().getMessage() != null ?
-                            task.getException().getMessage() : getString(R.string.error_unknown), null);
-                }
-                if (sOutgoingBids.contains(bid.getProductId())) {
-                    sOutgoingBids.remove(bid.getProductId());
-                }
+        database.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                DialogHelper.showDialogWithCloseAndDone(BaseActivity.this, R.string.warning, task
+                        .getException() != null && task.getException().getMessage() != null ?
+                        task.getException().getMessage() : getString(R.string.error_unknown), null);
+            }
+            if (sOutgoingBids.contains(bid.getProductId())) {
+                sOutgoingBids.remove(bid.getProductId());
             }
         });
 
-        FirebaseHelper.getBidder(bid.getSellerId(), new FirebaseHelper.OnResultListener() {
-            @Override
-            public void onResult(Object o) {
-                FirebaseHelper.sendActionBidMessage(getString(R.string.bid_cancelled).toUpperCase(),
-                        bid, (SellerBuyer) o, MessageContent.TYPE_BID_CANCELED);
-            }
-        });
+        FirebaseHelper.getBidder(bid.getSellerId(), o -> FirebaseHelper.sendActionBidMessage(getString(R.string.bid_cancelled).toUpperCase(),
+                bid, (SellerBuyer) o, MessageContent.TYPE_BID_CANCELED));
     }
 
     public interface IncomeBidsListener {

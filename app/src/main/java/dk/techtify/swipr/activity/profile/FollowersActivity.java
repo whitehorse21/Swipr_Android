@@ -60,21 +60,16 @@ public class FollowersActivity extends BaseActivity {
 
         mMode = getIntent().getExtras().getInt(EXTRA_MODE);
 
-        mActionView = (ActionView) findViewById(R.id.action_view);
+        mActionView = findViewById(R.id.action_view);
         mActionView.setMenuButton(R.drawable.ic_arrow_back);
         mActionView.setTitle(mMode == MODE_MESSAGE ? getString(R.string.new_message) : User.getLocalUser().getName());
         mActionView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mActionView.getActionButton().setVisibility(View.INVISIBLE);
-        mActionView.setMenuClickListener(new ActionView.MenuClickListener() {
-            @Override
-            public void onMenuClick() {
-                onBackPressed();
-            }
-        });
+        mActionView.setMenuClickListener(this::onBackPressed);
 
         mFollows = new ArrayList<>();
 
-        mRecycler = (RecyclerView) findViewById(R.id.recycler);
+        mRecycler = findViewById(R.id.recycler);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.
                 VERTICAL, false);
         mRecycler.setLayoutManager(layoutManager);
@@ -82,19 +77,16 @@ public class FollowersActivity extends BaseActivity {
         mRecycler.setAdapter(mAdapter);
 
         if (mMode == MODE_MESSAGE) {
-            mAdapter.setRecipientSelectedListener(new FollowAdapter.RecipientSelectedListener() {
-                @Override
-                public void onOnRecipientSelected(Follow follower) {
-                    Intent intent = new Intent(FollowersActivity.this, ChatActivity.class);
-                    intent.putExtra(ChatActivity.EXTRA_RECIPIENT, follower);
-                    startActivity(intent);
-                    finish();
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
+            mAdapter.setRecipientSelectedListener(follower -> {
+                Intent intent = new Intent(FollowersActivity.this, ChatActivity.class);
+                intent.putExtra(ChatActivity.EXTRA_RECIPIENT, follower);
+                startActivity(intent);
+                finish();
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             });
         }
 
-        mEditable = (EditText) findViewById(R.id.editable);
+        mEditable = findViewById(R.id.editable);
         mEditable.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -143,9 +135,8 @@ public class FollowersActivity extends BaseActivity {
                 }
 
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                Iterator it = map.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
+                for (Object o : map.entrySet()) {
+                    Map.Entry pair = (Map.Entry) o;
                     mFollows.add(new Follow(pair.getKey(), (Map<String, Object>) pair.getValue(),
                             mMode == MODE_FOLLOWING));
                 }

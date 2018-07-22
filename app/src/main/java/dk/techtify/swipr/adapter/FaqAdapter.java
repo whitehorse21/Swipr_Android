@@ -80,9 +80,9 @@ public class FaqAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public FaqItemHolder(View itemView) {
             super(itemView);
-            root = (LinearLayout) itemView.findViewById(R.id.root);
-            question = (TextView) itemView.findViewById(R.id.question);
-            answer = (TextView) itemView.findViewById(R.id.answer);
+            root = itemView.findViewById(R.id.root);
+            question = itemView.findViewById(R.id.question);
+            answer = itemView.findViewById(R.id.answer);
             question.setOnClickListener(this);
         }
 

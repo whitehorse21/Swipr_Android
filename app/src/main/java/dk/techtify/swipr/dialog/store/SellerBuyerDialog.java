@@ -1,22 +1,15 @@
 package dk.techtify.swipr.dialog.store;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.cocosw.bottomsheet.BottomSheet;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,10 +25,10 @@ import dk.techtify.swipr.dialog.BaseDialog;
 import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
-import dk.techtify.swipr.model.user.Counters;
-import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.model.profile.Follow;
 import dk.techtify.swipr.model.store.SellerBuyer;
+import dk.techtify.swipr.model.user.Counters;
+import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.view.RatingBar;
 
 /**
@@ -71,12 +64,7 @@ public class SellerBuyerDialog extends BaseDialog {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view1 -> getDialog().dismiss());
 
         (view.findViewById(R.id.plus_member)).setVisibility(mSellerBuyer.isPlusMember() ? View.VISIBLE : View.INVISIBLE);
         ((TextView) view.findViewById(R.id.seller_name)).setText(mSellerBuyer.getName());
@@ -91,39 +79,26 @@ public class SellerBuyerDialog extends BaseDialog {
         }
         ((TextView) view.findViewById(R.id.created)).setText(DateTimeHelper.getFormattedDate(mSellerBuyer.getCreated(), "dd.MM.yyyy"));
 
-        mSold = (TextView) view.findViewById(R.id.sold);
-        mPurchased = (TextView) view.findViewById(R.id.purchased);
-        mFollowers = (TextView) view.findViewById(R.id.followers);
+        mSold = view.findViewById(R.id.sold);
+        mPurchased = view.findViewById(R.id.purchased);
+        mFollowers = view.findViewById(R.id.followers);
 
-        mFollow = (CheckBox) view.findViewById(R.id.follow);
-        mFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    mFollow.setChecked(!mFollow.isChecked());
-                    return;
-                }
-                mFollow.setEnabled(false);
-                if (mFollow.isChecked()) {
-                    followSeller();
-                } else {
-                    unfollowSeller();
-                }
+        mFollow = view.findViewById(R.id.follow);
+        mFollow.setOnClickListener(v -> {
+            if (!NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                mFollow.setChecked(!mFollow.isChecked());
+                return;
+            }
+            mFollow.setEnabled(false);
+            if (mFollow.isChecked()) {
+                followSeller();
+            } else {
+                unfollowSeller();
             }
         });
-        mFollow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mFollow.setText(getString(isChecked ? R.string.following : R.string.follow));
-            }
-        });
+        mFollow.setOnCheckedChangeListener((buttonView, isChecked) -> mFollow.setText(getString(isChecked ? R.string.following : R.string.follow)));
 
-        view.findViewById(R.id.overflow).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOverflowMenu();
-            }
-        });
+        view.findViewById(R.id.overflow).setOnClickListener(v -> showOverflowMenu());
 
         if (NetworkHelper.isOnline(getActivity(), NetworkHelper.NONE)) {
             mDatabase.child("counter").child(mSellerBuyer.getId())
@@ -139,15 +114,12 @@ public class SellerBuyerDialog extends BaseDialog {
     private void showOverflowMenu() {
         BottomSheet.Builder sheet = new BottomSheet.Builder(getActivity());
         sheet.sheet(R.id.sheet_report_abuse, null, getResources().getString(R.string.report_abuse));
-        sheet.sheet(R.menu.menu_cancel).listener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case R.id.sheet_report_abuse:
-                        break;
-                    case R.id.cancel:
-                        break;
-                }
+        sheet.sheet(R.menu.menu_cancel).listener((dialog, which) -> {
+            switch (which) {
+                case R.id.sheet_report_abuse:
+                    break;
+                case R.id.cancel:
+                    break;
             }
         }).show();
     }
@@ -167,15 +139,12 @@ public class SellerBuyerDialog extends BaseDialog {
         childUpdates.put("counter/" + user.getId() + "/following/", Counters.getInstance().getFollowing() + 1);
         childUpdates.put("counter/" + mSellerBuyer.getId() + "/followers/", mTheirFollowersCount + 1);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    mFollow.setChecked(!mFollow.isChecked());
-                }
-
-                mFollow.setEnabled(true);
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                mFollow.setChecked(!mFollow.isChecked());
             }
+
+            mFollow.setEnabled(true);
         });
     }
 
@@ -188,15 +157,12 @@ public class SellerBuyerDialog extends BaseDialog {
         childUpdates.put("counter/" + user.getId() + "/following/", Counters.getInstance().getFollowing() - 1);
         childUpdates.put("counter/" + mSellerBuyer.getId() + "/followers/", mTheirFollowersCount - 1);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    mFollow.setChecked(!mFollow.isChecked());
-                }
-
-                mFollow.setEnabled(true);
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                mFollow.setChecked(!mFollow.isChecked());
             }
+
+            mFollow.setEnabled(true);
         });
     }
 

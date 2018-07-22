@@ -16,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -240,21 +238,21 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public MessageHolder(View itemView) {
             super(itemView);
-            root = (LinearLayout) itemView.findViewById(R.id.root);
+            root = itemView.findViewById(R.id.root);
 
-            bidImage = (ImageView) itemView.findViewById(R.id.bid);
+            bidImage = itemView.findViewById(R.id.bid);
 
-            contentMy = (FrameLayout) itemView.findViewById(R.id.content_layout_my);
-            layoutMy = (LinearLayout) itemView.findViewById(R.id.layout_my);
-            photoMy = (ImageView) itemView.findViewById(R.id.photo_my);
-            timeMy = (TextView) itemView.findViewById(R.id.time_my);
-            textMy = (TextView) itemView.findViewById(R.id.text_my);
+            contentMy = itemView.findViewById(R.id.content_layout_my);
+            layoutMy = itemView.findViewById(R.id.layout_my);
+            photoMy = itemView.findViewById(R.id.photo_my);
+            timeMy = itemView.findViewById(R.id.time_my);
+            textMy = itemView.findViewById(R.id.text_my);
 
-            contentTheir = (FrameLayout) itemView.findViewById(R.id.content_layout_they);
-            layoutTheir = (LinearLayout) itemView.findViewById(R.id.layout_they);
-            photoTheir = (ImageView) itemView.findViewById(R.id.photo_they);
-            textTheir = (TextView) itemView.findViewById(R.id.text_they);
-            timeTheir = (TextView) itemView.findViewById(R.id.time_they);
+            contentTheir = itemView.findViewById(R.id.content_layout_they);
+            layoutTheir = itemView.findViewById(R.id.layout_they);
+            photoTheir = itemView.findViewById(R.id.photo_they);
+            textTheir = itemView.findViewById(R.id.text_they);
+            timeTheir = itemView.findViewById(R.id.time_they);
 
             contentMy.setOnClickListener(this);
             contentTheir.setOnClickListener(this);

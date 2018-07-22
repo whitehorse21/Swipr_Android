@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -79,11 +77,11 @@ public class FavouritesItemHolderFragment extends Fragment implements ValueEvent
         View view = inflater.inflate(R.layout.fragment_store_item_holder, null);
 
         mPlusLabel = view.findViewById(R.id.plus_member);
-        mSellerName = (TextView) view.findViewById(R.id.seller_name);
-        mSellerRating = (RatingBar) view.findViewById(R.id.rating);
-        mSellerPhoto = (ImageView) view.findViewById(R.id.seller_photo);
+        mSellerName = view.findViewById(R.id.seller_name);
+        mSellerRating = view.findViewById(R.id.rating);
+        mSellerPhoto = view.findViewById(R.id.seller_photo);
 
-        VerticalViewPager itemPager = (VerticalViewPager) view.findViewById(R.id.pager);
+        VerticalViewPager itemPager = view.findViewById(R.id.pager);
         mAdapter = new StoreItemAdapter(getChildFragmentManager(), mProduct, mSeller);
         itemPager.setAdapter(mAdapter);
         itemPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {

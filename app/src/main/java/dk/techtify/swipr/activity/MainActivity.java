@@ -12,8 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,12 +34,12 @@ import dk.techtify.swipr.billing.IabHelper;
 import dk.techtify.swipr.billing.IabResult;
 import dk.techtify.swipr.billing.Inventory;
 import dk.techtify.swipr.billing.Purchase;
-import dk.techtify.swipr.dialog.sell.AddPhotoDialog;
 import dk.techtify.swipr.dialog.main.SwiprPlusDialog;
+import dk.techtify.swipr.dialog.sell.AddPhotoDialog;
 import dk.techtify.swipr.fragment.main.AboutFragment;
-import dk.techtify.swipr.fragment.main.MessagesFragment;
 import dk.techtify.swipr.fragment.main.FaqFragment;
 import dk.techtify.swipr.fragment.main.FavouritesFragment;
+import dk.techtify.swipr.fragment.main.MessagesFragment;
 import dk.techtify.swipr.fragment.main.MyProfileFragment;
 import dk.techtify.swipr.fragment.main.SellFragment;
 import dk.techtify.swipr.fragment.main.StoreFragment;
@@ -55,10 +53,8 @@ import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.helper.PermissionHelper;
 import dk.techtify.swipr.helper.PhotoHelper;
 import dk.techtify.swipr.helper.SpHelper;
-import dk.techtify.swipr.model.store.Product;
-import dk.techtify.swipr.model.store.StoreItem;
-import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.model.sell.Photo;
+import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.push.SwiprNotificationExtender;
 import dk.techtify.swipr.view.ActionView;
 
@@ -105,6 +101,19 @@ public class MainActivity extends BaseActivity implements SwiprPlusDialog.DealLi
         return mIabHelper != null && isIabHelperWorking;
     }
 
+    PhotoHelper.ExecuteListener mGetPhotoExecuteListener = (path, fromGallery) -> {
+        AddPhotoDialog addPhotoDialog = (AddPhotoDialog) getSupportFragmentManager()
+                .findFragmentByTag(AddPhotoDialog.class.getSimpleName());
+        if (addPhotoDialog != null) {
+            addPhotoDialog.attachPhoto(path, fromGallery);
+        }
+    };
+    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = (purchase, result) -> {
+        if (AppConfig.DEBUG) {
+            Log.d("IN-APP PURCHASE", purchase.getSku() + " renewed: " + result.isSuccess());
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,32 +134,26 @@ public class MainActivity extends BaseActivity implements SwiprPlusDialog.DealLi
             rootParams.bottomMargin = DisplayHelper.getNavigationBarHeight(this, DisplayHelper.getScreenOrientation(this));
         }
 
-        mContainer = (FrameLayout) findViewById(R.id.container);
-        mActionView = (ActionView) findViewById(R.id.action_view);
+        mContainer = findViewById(R.id.container);
+        mActionView = findViewById(R.id.action_view);
         if (Build.VERSION.SDK_INT > 20) {
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mActionView.getLayoutParams();
             params.topMargin = DisplayHelper.getStatusBarHeight(this);
             findViewById(R.id.menu_content).setPadding(0, DisplayHelper.getStatusBarHeight(this), 0, 0);
         }
-        mActionView.setMenuClickListener(new ActionView.MenuClickListener() {
-            @Override
-            public void onMenuClick() {
-                if (mMenuLayer.isOpened()) {
-                    mMenuLayer.closeLayer(true);
-                } else if (mMenuLayer.isClosed()) {
-                    mMenuLayer.setVisibility(View.VISIBLE);
-                    mMenuLayer.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            IoHelper.hideKeyboard(MainActivity.this, mMenuLayer);
-                            mMenuLayer.openLayer(true);
-                        }
-                    });
-                }
+        mActionView.setMenuClickListener(() -> {
+            if (mMenuLayer.isOpened()) {
+                mMenuLayer.closeLayer(true);
+            } else if (mMenuLayer.isClosed()) {
+                mMenuLayer.setVisibility(View.VISIBLE);
+                mMenuLayer.post(() -> {
+                    IoHelper.hideKeyboard(MainActivity.this, mMenuLayer);
+                    mMenuLayer.openLayer(true);
+                });
             }
         });
 
-        mMenuLayer = (SlidingLayer) findViewById(R.id.menu_layer);
+        mMenuLayer = findViewById(R.id.menu_layer);
         setupMenuLayer();
 
         checkContentHeight();
@@ -169,195 +172,6 @@ public class MainActivity extends BaseActivity implements SwiprPlusDialog.DealLi
             mIabHelper = SwiprApp.getInstance().getIabHelper();
             mIabHelper.enableDebugLogging(AppConfig.DEBUG);
             setupIabHelper();
-        }
-    }
-
-    private void setupIabHelper() {
-        try {
-            mIabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-                public void onIabSetupFinished(IabResult result) {
-                    if (AppConfig.DEBUG) {
-                        Log.d("IN-APP PURCHASE", "IabHelper setup finished.");
-                    }
-                    if (!result.isSuccess()) {
-                        if (AppConfig.DEBUG) {
-                            Log.d("IN-APP PURCHASE", "Problem setting up In-app Billing: " + result);
-                        }
-                        return;
-                    }
-                    if (mIabHelper == null) {
-                        return;
-                    }
-                    if (AppConfig.DEBUG) {
-                        Log.d("IN-APP PURCHASE", "Setup successful. Querying inventory.");
-                    }
-
-                    mIabHelper.queryInventoryAsync(true, Arrays.asList(Constants.Purchase.ID_LIST),
-                            mSkuListQueryFinishedListener);
-                }
-            });
-        } catch (IllegalStateException e) {
-            if (AppConfig.DEBUG) {
-                e.printStackTrace();
-            }
-            if (mIabHelper != null) {
-                mIabHelper.flagEndAsync();
-                mIabHelper.queryInventoryAsync(true, Arrays.asList(Constants.Purchase.ID_LIST),
-                        mSkuListQueryFinishedListener);
-            }
-        } catch (Exception e) {
-            if (AppConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void setupMenuLayer() {
-        findViewById(R.id.store).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof StoreFragment)) {
-                    Fragment previous = getSupportFragmentManager().findFragmentByTag(StoreFragment
-                            .class.getName());
-                    FragmentHelper.replaceFragment(MainActivity.this, previous == null
-                            ? new StoreFragment() : previous);
-                }
-                mMenuLayer.closeLayer(true);
-            }
-        });
-        findViewById(R.id.sell).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!User.checkSignIn(MainActivity.this)) {
-                    return;
-                }
-
-                if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof SellFragment)) {
-                    FragmentHelper.replaceFragment(MainActivity.this, new SellFragment());
-                }
-                mMenuLayer.closeLayer(true);
-            }
-        });
-        findViewById(R.id.message).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!User.checkSignIn(MainActivity.this)) {
-                    return;
-                }
-
-                if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof MessagesFragment)) {
-                    FragmentHelper.replaceFragment(MainActivity.this, new MessagesFragment());
-                }
-                mMenuLayer.closeLayer(true);
-            }
-        });
-        findViewById(R.id.favourites).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!User.checkSignIn(MainActivity.this)) {
-                    return;
-                }
-
-                if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof FavouritesFragment)) {
-                    FragmentHelper.replaceFragment(MainActivity.this, new FavouritesFragment());
-                }
-                mMenuLayer.closeLayer(true);
-            }
-        });
-        findViewById(R.id.faq).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof FaqFragment)) {
-                    FragmentHelper.replaceFragment(MainActivity.this, new FaqFragment());
-                }
-                mMenuLayer.closeLayer(true);
-            }
-        });
-        findViewById(R.id.about).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof AboutFragment)) {
-                    FragmentHelper.replaceFragment(MainActivity.this, new AboutFragment());
-                }
-                mMenuLayer.closeLayer(true);
-            }
-        });
-        findViewById(R.id.menu_menu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMenuLayer.closeLayer(true);
-            }
-        });
-        findViewById(R.id.menu_settings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-
-        TextView name = (TextView) findViewById(R.id.menu_name);
-        name.setText(User.getLocalUser().getName());
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openMyProfile();
-            }
-        });
-
-        mMenuLayer.setSlidingEnabled(false);
-        mMenuLayer.setOnInteractListener(new SlidingLayer.OnInteractListener() {
-            @Override
-            public void onOpen() {
-                mMenuLayer.setSlidingEnabled(true);
-            }
-
-            @Override
-            public void onShowPreview() {
-
-            }
-
-            @Override
-            public void onClose() {
-                mMenuLayer.setSlidingEnabled(false);
-            }
-
-            @Override
-            public void onOpened() {
-
-            }
-
-            @Override
-            public void onPreviewShowed() {
-
-            }
-
-            @Override
-            public void onClosed() {
-                mMenuLayer.setVisibility(View.GONE);
-            }
-        });
-        if (User.getLocalUser().getEmail() != null) {
-            ImageView photo = (ImageView) findViewById(R.id.menu_user_photo);
-            if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
-                GlideApp.with(this)
-                        .load(FirebaseStorage.getInstance().getReferenceFromUrl(User.getLocalUser().getPhotoUrl()))
-                        .into(photo);
-            }
-            photo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openMyProfile();
-                }
-            });
-        } else {
-            findViewById(R.id.menu_user_photo).setVisibility(View.INVISIBLE);
         }
     }
 
@@ -454,38 +268,152 @@ public class MainActivity extends BaseActivity implements SwiprPlusDialog.DealLi
         }
     }
 
-    PhotoHelper.ExecuteListener mGetPhotoExecuteListener = new PhotoHelper.ExecuteListener() {
-        @Override
-        public void onPostExecute(String path, boolean fromGallery) {
-            AddPhotoDialog addPhotoDialog = (AddPhotoDialog) getSupportFragmentManager()
-                    .findFragmentByTag(AddPhotoDialog.class.getSimpleName());
-            if (addPhotoDialog != null) {
-                addPhotoDialog.attachPhoto(path, fromGallery);
+    private void setupIabHelper() {
+        try {
+            mIabHelper.startSetup(result -> {
+                if (AppConfig.DEBUG) {
+                    Log.d("IN-APP PURCHASE", "IabHelper setup finished.");
+                }
+                if (!result.isSuccess()) {
+                    if (AppConfig.DEBUG) {
+                        Log.d("IN-APP PURCHASE", "Problem setting up In-app Billing: " + result);
+                    }
+                    return;
+                }
+                if (mIabHelper == null) {
+                    return;
+                }
+                if (AppConfig.DEBUG) {
+                    Log.d("IN-APP PURCHASE", "Setup successful. Querying inventory.");
+                }
+
+                mIabHelper.queryInventoryAsync(true, Arrays.asList(Constants.Purchase.ID_LIST),
+                        mSkuListQueryFinishedListener);
+            });
+        } catch (IllegalStateException e) {
+            if (AppConfig.DEBUG) {
+                e.printStackTrace();
+            }
+            if (mIabHelper != null) {
+                mIabHelper.flagEndAsync();
+                mIabHelper.queryInventoryAsync(true, Arrays.asList(Constants.Purchase.ID_LIST),
+                        mSkuListQueryFinishedListener);
+            }
+        } catch (Exception e) {
+            if (AppConfig.DEBUG) {
+                e.printStackTrace();
             }
         }
-    };
+    }
 
-    private void initSideMenu() {
-        mSlidingMenu = new SlidingMenu(this);
-        mSlidingMenu.setMode(SlidingMenu.LEFT);
-        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-        mSlidingMenu.setFadeEnabled(false);
-        View view = getLayoutInflater().inflate(R.layout.plus_side_menu_alert, null);
-        view.setOnClickListener(new View.OnClickListener() {
+    private void setupMenuLayer() {
+        findViewById(R.id.store).setOnClickListener(view -> {
+            if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof StoreFragment)) {
+                Fragment previous = getSupportFragmentManager().findFragmentByTag(StoreFragment
+                        .class.getName());
+                FragmentHelper.replaceFragment(MainActivity.this, previous == null
+                        ? new StoreFragment() : previous);
+            }
+            mMenuLayer.closeLayer(true);
+        });
+        findViewById(R.id.sell).setOnClickListener(view -> {
+            if (!User.checkSignIn(MainActivity.this)) {
+                return;
+            }
+
+            if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof SellFragment)) {
+                FragmentHelper.replaceFragment(MainActivity.this, new SellFragment());
+            }
+            mMenuLayer.closeLayer(true);
+        });
+        findViewById(R.id.message).setOnClickListener(view -> {
+            if (!User.checkSignIn(MainActivity.this)) {
+                return;
+            }
+
+            if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof MessagesFragment)) {
+                FragmentHelper.replaceFragment(MainActivity.this, new MessagesFragment());
+            }
+            mMenuLayer.closeLayer(true);
+        });
+        findViewById(R.id.favourites).setOnClickListener(view -> {
+            if (!User.checkSignIn(MainActivity.this)) {
+                return;
+            }
+
+            if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof FavouritesFragment)) {
+                FragmentHelper.replaceFragment(MainActivity.this, new FavouritesFragment());
+            }
+            mMenuLayer.closeLayer(true);
+        });
+        findViewById(R.id.faq).setOnClickListener(view -> {
+            if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof FaqFragment)) {
+                FragmentHelper.replaceFragment(MainActivity.this, new FaqFragment());
+            }
+            mMenuLayer.closeLayer(true);
+        });
+        findViewById(R.id.about).setOnClickListener(view -> {
+            if (!(FragmentHelper.getCurrentFragment(MainActivity.this) instanceof AboutFragment)) {
+                FragmentHelper.replaceFragment(MainActivity.this, new AboutFragment());
+            }
+            mMenuLayer.closeLayer(true);
+        });
+        findViewById(R.id.menu_menu).setOnClickListener(view -> mMenuLayer.closeLayer(true));
+        findViewById(R.id.menu_settings).setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        });
+
+        TextView name = findViewById(R.id.menu_name);
+        name.setText(User.getLocalUser().getName());
+        name.setOnClickListener(v -> {
+
+        });
+        name.setOnClickListener(v -> openMyProfile());
+
+        mMenuLayer.setSlidingEnabled(false);
+        mMenuLayer.setOnInteractListener(new SlidingLayer.OnInteractListener() {
             @Override
-            public void onClick(View v) {
-                mSlidingMenu.toggle(true);
+            public void onOpen() {
+                mMenuLayer.setSlidingEnabled(true);
+            }
 
-                SwiprPlusDialog spd = new SwiprPlusDialog();
-                spd.setDealListener(MainActivity.this);
-                spd.show(getSupportFragmentManager(), spd.getClass().getSimpleName());
+            @Override
+            public void onShowPreview() {
+
+            }
+
+            @Override
+            public void onClose() {
+                mMenuLayer.setSlidingEnabled(false);
+            }
+
+            @Override
+            public void onOpened() {
+
+            }
+
+            @Override
+            public void onPreviewShowed() {
+
+            }
+
+            @Override
+            public void onClosed() {
+                mMenuLayer.setVisibility(View.GONE);
             }
         });
-        mSlidingMenu.setMenu(view);
-        mSlidingMenu.setBehindWidth(DisplayHelper.dpToPx(this, 100));
-        mSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        mSlidingMenu.setSlidingEnabled(false);
-        mSlidingMenu.setBehindScrollScale(1);
+        if (User.getLocalUser().getEmail() != null) {
+            ImageView photo = findViewById(R.id.menu_user_photo);
+            if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
+                GlideApp.with(this)
+                        .load(FirebaseStorage.getInstance().getReferenceFromUrl(User.getLocalUser().getPhotoUrl()))
+                        .into(photo);
+            }
+            photo.setOnClickListener(v -> openMyProfile());
+        } else {
+            findViewById(R.id.menu_user_photo).setVisibility(View.INVISIBLE);
+        }
     }
 
     public void enableSideMenu(boolean enable) {
@@ -650,13 +578,25 @@ public class MainActivity extends BaseActivity implements SwiprPlusDialog.DealLi
         }
     };
 
-    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
-        public void onConsumeFinished(Purchase purchase, IabResult result) {
-            if (AppConfig.DEBUG) {
-                Log.d("IN-APP PURCHASE", purchase.getSku() + " renewed: " + result.isSuccess());
-            }
-        }
-    };
+    private void initSideMenu() {
+        mSlidingMenu = new SlidingMenu(this);
+        mSlidingMenu.setMode(SlidingMenu.LEFT);
+        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        mSlidingMenu.setFadeEnabled(false);
+        View view = getLayoutInflater().inflate(R.layout.plus_side_menu_alert, null);
+        view.setOnClickListener(v -> {
+            mSlidingMenu.toggle(true);
+
+            SwiprPlusDialog spd = new SwiprPlusDialog();
+            spd.setDealListener(MainActivity.this);
+            spd.show(getSupportFragmentManager(), spd.getClass().getSimpleName());
+        });
+        mSlidingMenu.setMenu(view);
+        mSlidingMenu.setBehindWidth(DisplayHelper.dpToPx(this, 100));
+        mSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        mSlidingMenu.setSlidingEnabled(false);
+        mSlidingMenu.setBehindScrollScale(1);
+    }
 
     @Override
     public void swiprPlusDeal() {

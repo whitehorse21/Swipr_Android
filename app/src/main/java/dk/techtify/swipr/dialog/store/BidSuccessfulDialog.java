@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import dk.techtify.swipr.Constants;
 import dk.techtify.swipr.R;
@@ -22,19 +21,9 @@ public class BidSuccessfulDialog extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_bid_successful, null);
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> getDialog().dismiss());
 
-        ((CheckBox) view.findViewById(R.id.don_t_show)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SwiprApp.getInstance().getSp().edit().putBoolean(Constants.Prefs.SHOW_BID_SUCCESSFUL_ALERT, !isChecked).apply();
-            }
-        });
+        ((CheckBox) view.findViewById(R.id.don_t_show)).setOnCheckedChangeListener((buttonView, isChecked) -> SwiprApp.getInstance().getSp().edit().putBoolean(Constants.Prefs.SHOW_BID_SUCCESSFUL_ALERT, !isChecked).apply());
 
         return view;
     }

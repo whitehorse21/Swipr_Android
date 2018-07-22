@@ -5,16 +5,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import dk.techtify.swipr.R;
-import dk.techtify.swipr.activity.MainActivity;
 
 /**
  * Created by Pavel on 4/11/2016.
@@ -69,20 +65,12 @@ public class DialogHelper {
         lp.width = DisplayHelper.dpToPx(context, 320);
         d.getWindow().setAttributes(lp);
 
-        custom.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
+        custom.findViewById(R.id.close).setOnClickListener(v -> d.dismiss());
 
-        custom.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-                if (listener != null) {
-                    listener.onPositive(null);
-                }
+        custom.findViewById(R.id.positive).setOnClickListener(v -> {
+            d.dismiss();
+            if (listener != null) {
+                listener.onPositive(null);
             }
         });
     }
@@ -122,30 +110,19 @@ public class DialogHelper {
         lp.width = DisplayHelper.dpToPx(context, 320);
         d.getWindow().setAttributes(lp);
 
-        custom.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
+        custom.findViewById(R.id.close).setOnClickListener(v -> d.dismiss());
+
+        custom.findViewById(R.id.gallery).setOnClickListener(v -> {
+            d.dismiss();
+            if (listener != null) {
+                listener.onPositive(0);
             }
         });
 
-        custom.findViewById(R.id.gallery).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-                if (listener != null) {
-                    listener.onPositive(0);
-                }
-            }
-        });
-
-        custom.findViewById(R.id.camera).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-                if (listener != null) {
-                    listener.onPositive(1);
-                }
+        custom.findViewById(R.id.camera).setOnClickListener(v -> {
+            d.dismiss();
+            if (listener != null) {
+                listener.onPositive(1);
             }
         });
     }

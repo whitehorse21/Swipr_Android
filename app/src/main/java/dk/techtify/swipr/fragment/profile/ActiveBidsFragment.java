@@ -64,7 +64,7 @@ public class ActiveBidsFragment extends Fragment implements ActiveBidsAdapter.Ac
 
         mProgressBar = view.findViewById(R.id.progress);
 
-        mRecycler = (RecyclerView) view.findViewById(R.id.recycler);
+        mRecycler = view.findViewById(R.id.recycler);
         final SwipeLinearLayoutManager layoutManager = new SwipeLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecycler.setLayoutManager(layoutManager);
 
@@ -74,12 +74,7 @@ public class ActiveBidsFragment extends Fragment implements ActiveBidsAdapter.Ac
         } else {
             list = ((ActiveBidsActivity) getActivity()).getIncomingBids();
         }
-        mAdapter = new ActiveBidsAdapter(getActivity(), mMode, list, new ActiveBidsAdapter.ParentSwipeListener() {
-            @Override
-            public void onParentSwipeEnable(boolean enable) {
-                layoutManager.setScrollEnabled(enable);
-            }
-        }, this);
+        mAdapter = new ActiveBidsAdapter(getActivity(), mMode, list, layoutManager::setScrollEnabled, this);
         mRecycler.setAdapter(mAdapter);
 
         if (mMode == TYPE_RECEIVED) {
@@ -102,9 +97,8 @@ public class ActiveBidsFragment extends Fragment implements ActiveBidsAdapter.Ac
 
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                     List<IncomingBid> list = new ArrayList<>();
-                    Iterator it = map.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
+                    for (Object o : map.entrySet()) {
+                        Map.Entry pair = (Map.Entry) o;
                         list.add(new IncomingBid(pair.getKey().toString(),
                                 (Map<String, Object>) pair.getValue()));
                     }

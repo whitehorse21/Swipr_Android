@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,39 +35,31 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         final FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        ActionView actionView = (ActionView) findViewById(R.id.action_view);
+        ActionView actionView = findViewById(R.id.action_view);
         actionView.removeMenuButton();
         actionView.setTitle(getIntent().getStringExtra(EXTRA_TITLE).toUpperCase());
-        actionView.setActionButton(R.drawable.ic_close, new ActionView.ActionClickListener() {
-            @Override
-            public void onActionButtonClick() {
-                onBackPressed();
-            }
-        });
+        actionView.setActionButton(R.drawable.ic_close, this::onBackPressed);
 
         final ArrayList<String> list = getIntent().getStringArrayListExtra(EXTRA_PHOTOS);
 
-        final ImageView photo = (ImageView) findViewById(R.id.photo);
+        final ImageView photo = findViewById(R.id.photo);
         if (!TextUtils.isEmpty(list.get(0))) {
             GlideApp.with(this)
                     .load(storage.getReferenceFromUrl(list.get(0)))
                     .into(photo);
         }
 
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
+        RecyclerView recycler = findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recycler.setAdapter(new PhotoDetailsAdapter(this, list, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(list.get((Integer)v.getTag()))) {
-                    GlideApp.with(ProductDetailsActivity.this)
-                            .load(storage.getReferenceFromUrl(list.get((Integer) v.getTag())))
-                            .into(photo);
-                }
+        recycler.setAdapter(new PhotoDetailsAdapter(this, list, v -> {
+            if (!TextUtils.isEmpty(list.get((Integer) v.getTag()))) {
+                GlideApp.with(ProductDetailsActivity.this)
+                        .load(storage.getReferenceFromUrl(list.get((Integer) v.getTag())))
+                        .into(photo);
             }
         }));
 
-        TextView description = (TextView) findViewById(R.id.description);
+        TextView description = findViewById(R.id.description);
         description.setText(getIntent().getStringExtra(EXTRA_DESCRIPTION));
         description.setMovementMethod(new ScrollingMovementMethod());
     }

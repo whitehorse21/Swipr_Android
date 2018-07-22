@@ -30,22 +30,14 @@ public class SwiprPlusDialog extends BaseDialog {
 //                        [1]) < 561 ? R.layout.dialog_swipr_plus_small : R.layout.dialog_swipr_plus,
                 R.layout.dialog_swipr_plus_scroll, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view1 -> getDialog().dismiss());
 
-        mPlusHandView = (PlusHandView) view.findViewById(R.id.hand);
-        mPlusHandView.setAnimationDoneListener(new PlusHandView.AnimationDoneListener() {
-            @Override
-            public void onAnimationDone() {
-                if (mDealListener != null) {
-                    mDealListener.swiprPlusDeal();
-                }
-                getDialog().dismiss();
+        mPlusHandView = view.findViewById(R.id.hand);
+        mPlusHandView.setAnimationDoneListener(() -> {
+            if (mDealListener != null) {
+                mDealListener.swiprPlusDeal();
             }
+            getDialog().dismiss();
         });
 
         view.findViewById(R.id.sizer).addOnLayoutChangeListener(new View.OnLayoutChangeListener() {

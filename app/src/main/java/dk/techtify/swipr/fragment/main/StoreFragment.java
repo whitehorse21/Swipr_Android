@@ -64,25 +64,19 @@ public class StoreFragment extends Fragment implements ActionView.ActionClickLis
         mBack = view.findViewById(R.id.back);
         mForward = view.findViewById(R.id.forward);
 
-        mBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mIsPlusMember) {
-                    if (mItemPager.getCurrentItem() > 0) {
-                        mItemPager.setCurrentItem(mItemPager.getCurrentItem() - 1, true);
-                    }
-                } else {
-                    ((MainActivity) getActivity()).getPlusSlidingBar().toggle();
+        mBack.setOnClickListener(view12 -> {
+            if (mIsPlusMember) {
+                if (mItemPager.getCurrentItem() > 0) {
+                    mItemPager.setCurrentItem(mItemPager.getCurrentItem() - 1, true);
                 }
+            } else {
+                ((MainActivity) getActivity()).getPlusSlidingBar().toggle();
             }
         });
 
-        mForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mItemPager.getCurrentItem() < mAdapter.getCount() - 1) {
-                    mItemPager.setCurrentItem(mItemPager.getCurrentItem() + 1, true);
-                }
+        mForward.setOnClickListener(view1 -> {
+            if (mItemPager.getCurrentItem() < mAdapter.getCount() - 1) {
+                mItemPager.setCurrentItem(mItemPager.getCurrentItem() + 1, true);
             }
         });
 
@@ -90,7 +84,7 @@ public class StoreFragment extends Fragment implements ActionView.ActionClickLis
             mAdapter = new StoreItemHolderAdapter(getChildFragmentManager());
         }
 
-        mItemPager = (PlusMembershipViewPager) view.findViewById(R.id.pager);
+        mItemPager = view.findViewById(R.id.pager);
         mItemPager.setPlusMember(mIsPlusMember);
         mItemPager.setAdapter(mAdapter);
 
@@ -132,12 +126,7 @@ public class StoreFragment extends Fragment implements ActionView.ActionClickLis
         };
         mItemPager.addOnPageChangeListener(onPageChangeListener);
 
-        mItemPager.post(new Runnable() {
-            @Override
-            public void run() {
-                onPageChangeListener.onPageSelected(mItemPager.getCurrentItem());
-            }
-        });
+        mItemPager.post(() -> onPageChangeListener.onPageSelected(mItemPager.getCurrentItem()));
 
         return view;
     }

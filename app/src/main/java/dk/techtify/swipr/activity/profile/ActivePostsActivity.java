@@ -8,8 +8,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,8 +29,8 @@ import dk.techtify.swipr.helper.DialogHelper;
 import dk.techtify.swipr.helper.FirebaseHelper;
 import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.helper.NetworkHelper;
-import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.model.store.Product;
+import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.view.ActionView;
 import dk.techtify.swipr.view.SwipeLinearLayoutManager;
 
@@ -59,17 +57,12 @@ public class ActivePostsActivity extends BaseActivity implements ActivePostsAdap
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mActionView = (ActionView) findViewById(R.id.action_view);
+        mActionView = findViewById(R.id.action_view);
         mActionView.setMenuButton(R.drawable.ic_arrow_back);
         mActionView.setTitle(User.getLocalUser().getName());
         mActionView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mActionView.getActionButton().setVisibility(View.INVISIBLE);
-        mActionView.setMenuClickListener(new ActionView.MenuClickListener() {
-            @Override
-            public void onMenuClick() {
-                onBackPressed();
-            }
-        });
+        mActionView.setMenuClickListener(this::onBackPressed);
 
         if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
             mActionView.getPhotoView().setVisibility(View.VISIBLE);
@@ -80,18 +73,13 @@ public class ActivePostsActivity extends BaseActivity implements ActivePostsAdap
 
         mProducts = new ArrayList<>();
 
-        mRecycler = (RecyclerView) findViewById(R.id.recycler);
+        mRecycler = findViewById(R.id.recycler);
         final SwipeLinearLayoutManager layoutManager = new SwipeLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecycler.setLayoutManager(layoutManager);
-        mAdapter = new ActivePostsAdapter(this, mProducts, new ActivePostsAdapter.ParentSwipeListener() {
-            @Override
-            public void onParentSwipeEnable(boolean enable) {
-                layoutManager.setScrollEnabled(enable);
-            }
-        }, this);
+        mAdapter = new ActivePostsAdapter(this, mProducts, layoutManager::setScrollEnabled, this);
         mRecycler.setAdapter(mAdapter);
 
-        mCounter = (TextView) findViewById(R.id.count);
+        mCounter = findViewById(R.id.count);
         mCounter.setText(getIntent().getStringExtra(EXTRA_COUNT));
 
         getServerProducts();
@@ -110,9 +98,8 @@ public class ActivePostsActivity extends BaseActivity implements ActivePostsAdap
 
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                 ((TextView) findViewById(R.id.count)).setText(String.valueOf(map.size()));
-                Iterator it = map.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
+                for (Object o : map.entrySet()) {
+                    Map.Entry pair = (Map.Entry) o;
                     mProducts.add(new Product(pair.getKey().toString(), (Map<String, Object>) pair.getValue()));
                 }
 

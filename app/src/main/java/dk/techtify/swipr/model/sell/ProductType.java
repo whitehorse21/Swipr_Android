@@ -45,7 +45,7 @@ public class ProductType implements Serializable, SellProductTypeBrand {
             this.dk = this.en = "";
         }
         this.scaleIds = map.containsKey("scaleType") ? ((ArrayList<String>) map.get("scaleType")) : null;
-        this.categoryIds = map.containsKey("category") ? ((ArrayList<String>) map.get("category")) : new ArrayList<String>();
+        this.categoryIds = map.containsKey("category") ? ((ArrayList<String>) map.get("category")) : new ArrayList<>();
     }
 
     public ProductType(String id, JSONObject jo) throws JSONException {

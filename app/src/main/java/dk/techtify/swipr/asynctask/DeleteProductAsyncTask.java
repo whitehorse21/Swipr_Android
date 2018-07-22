@@ -5,16 +5,8 @@ import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import dk.techtify.swipr.AppConfig;
 import dk.techtify.swipr.Constants;
-import dk.techtify.swipr.model.store.Product;
-import dk.techtify.swipr.model.user.User;
 
 /**
  * Created by Pavel on 1/26/2017.

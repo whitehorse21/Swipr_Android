@@ -46,25 +46,17 @@ public class SizePickerDialog extends BaseDialog {
         mDefValue = getArguments().getInt(POSITION);
         View view = inflater.inflate(R.layout.dialog_sell_size_picker, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view12 -> getDialog().dismiss());
 
-        final MaterialNumberPicker picker = (MaterialNumberPicker) view.findViewById(R.id.size);
+        final MaterialNumberPicker picker = view.findViewById(R.id.size);
         picker.setMinValue(0);
         picker.setMaxValue(mScale.size() - 1);
         picker.setDisplayedValues(mScale.toArray(new String[0]));
         picker.setValue(mDefValue);
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSizeSelectedListener.onSizeSelected(picker.getValue(), mScale.get(picker.getValue()));
-                getDialog().dismiss();
-            }
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> {
+            mSizeSelectedListener.onSizeSelected(picker.getValue(), mScale.get(picker.getValue()));
+            getDialog().dismiss();
         });
 
         return view;

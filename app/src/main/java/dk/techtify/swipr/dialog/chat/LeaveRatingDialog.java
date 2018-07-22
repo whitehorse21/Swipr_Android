@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +27,6 @@ import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.profile.Follow;
 import dk.techtify.swipr.model.store.Product;
 import dk.techtify.swipr.model.store.SellerBuyer;
-import dk.techtify.swipr.model.user.Counters;
 import dk.techtify.swipr.model.user.User;
 
 /**
@@ -66,15 +63,10 @@ public class LeaveRatingDialog extends BaseDialog {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view -> getDialog().dismiss());
 
-        mTitle = (TextView) view.findViewById(R.id.title);
-        mLeaveRating = (RatingBar) view.findViewById(R.id.leave_rating);
+        mTitle = view.findViewById(R.id.title);
+        mLeaveRating = view.findViewById(R.id.leave_rating);
 
         ((TextView) view.findViewById(R.id.seller_name)).setText(mOtherPerson.getName());
         if (!TextUtils.isEmpty(mOtherPerson.getPhotoUrl())) {
@@ -89,7 +81,7 @@ public class LeaveRatingDialog extends BaseDialog {
                 if (dataSnapshot == null || dataSnapshot.getValue() == null || !LeaveRatingDialog.this.isAdded()) {
                     return;
                 }
-                Product product = new Product(dataSnapshot.getKey().toString(), (Map<String, Object>) dataSnapshot.getValue());
+                Product product = new Product(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
                 mTitle.setVisibility(View.VISIBLE);
                 if (mSellerId.equals(User.getLocalUser().getId()) && product.isRatingLeftBySeller()) {
                     mTitle.setText(getString(R.string.rating_already_provided));
@@ -109,14 +101,11 @@ public class LeaveRatingDialog extends BaseDialog {
             }
         });
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mLeaveRating.getRating() == 0) {
-                    getDialog().dismiss();
-                } else if (mLeaveRating.getRating() > 0 && NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    saveRating();
-                }
+        view.findViewById(R.id.positive).setOnClickListener(v -> {
+            if (mLeaveRating.getRating() == 0) {
+                getDialog().dismiss();
+            } else if (mLeaveRating.getRating() > 0 && NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                saveRating();
             }
         });
 
@@ -136,7 +125,7 @@ public class LeaveRatingDialog extends BaseDialog {
                     return;
                 }
 
-                mSellerBuyer = new SellerBuyer(dataSnapshot.getKey().toString(),
+                mSellerBuyer = new SellerBuyer(dataSnapshot.getKey(),
                         (Map<String, Object>) dataSnapshot.getValue());
 
                 (view.findViewById(R.id.plus_member)).setVisibility(mSellerBuyer.isPlusMember() ? View.VISIBLE : View.INVISIBLE);

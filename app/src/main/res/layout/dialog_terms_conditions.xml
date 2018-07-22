@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -43,15 +43,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:paddingLeft="24dp"
-                    android:text="Lorem ipsum dolor sit amet, an sit stet nominati, everti pertinax te est. Ad eum illum pertinacia argumentum. Mei cu habeo referrentur, duo eu idque virtute accumsan. Et usu nostrud vituperata ullamcorper, no sit illum numquam, alii deserunt mediocritatem ex eam. Vis ignota omnium phaedrum in, ei eos altera diceret. Alii vulputate ei vim, cu dolorem prodesset mel.
-\n\n
-Libris diceret hendrerit no sit, nec posse integre ei. Ea vis erant everti. Vis ludus aperiam omittantur no, ne mel principes assentior. Et labores pertinacia reprimique cum, an nec ceteros deserunt eleifend. Cu sit eros mucius, pro in cibo nihil.
-\n\n
-Invidunt forensibus repudiandae cum no. Per ad sale dignissim, ad duis epicurei phaedrum sed, te sed accumsan incorrupte delicatissimi. Te alii erat ius. Ius ei reprehendunt concludaturque. Ex duo facilisi senserit, ex ius oratio forensibus. Habemus singulis cu per, pri et dicam partem scribentur, eam ea tation putant iisque. Cum in aperiam accusam verterem, ei justo nobis gubergren sed, ignota suscipit vix an.
-\n\n
-Ius at minim oportere, brute debitis ea sed. Ne sit aperiam debitis inermis, sit eu sumo platonem gloriatur, cum errem diceret luptatum ea. Ei vocibus denique dissentias per. Cu vel falli nonumy alienum, ex duis adipiscing vis. Consul pertinacia has ex.
-\n\n
-Omittam atomorum quo ad, qui eu erat omittam maiestatis. Nobis antiopam vel an, illud integre omnesque vix id. Pri voluptua oporteat electram in, ne mea autem luptatum insolens. Te nostro diceret accusata qui, nec viderer repudiare consectetuer cu, consulatu adversarium pro cu. Quo graeco aperiri adolescens te. Id nibh wisi nobis pro.\n"
+                    tools:text="@tools:sample/lorem/random"
                     android:paddingRight="24dp"
                     android:textColor="@color/textSecondary"
                     android:textSize="@dimen/text_regular" />

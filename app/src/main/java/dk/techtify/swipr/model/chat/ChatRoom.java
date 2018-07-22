@@ -14,7 +14,6 @@ public class ChatRoom {
 
     @Exclude
     String userId;
-
     String userName;
     String userPhotoUrl;
     String messageSenderId;
@@ -41,7 +40,7 @@ public class ChatRoom {
     }
 
     public Map<String, Object> toMap() {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("userName", userName);
         if (userPhotoUrl != null) {
             map.put("userPhotoUrl", userPhotoUrl);

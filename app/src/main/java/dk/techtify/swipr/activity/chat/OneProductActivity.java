@@ -3,14 +3,11 @@ package dk.techtify.swipr.activity.chat;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,12 +66,7 @@ public class OneProductActivity extends BaseActivity {
 
         setContentView(R.layout.activity_one_product);
 
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        findViewById(R.id.back).setOnClickListener(v -> finish());
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -142,31 +134,25 @@ public class OneProductActivity extends BaseActivity {
         ((TextView) findViewById(R.id.name)).setText(mProduct.getName());
         ((TextView) findViewById(R.id.price)).setText(TextUtils.concat(String.valueOf(mProduct.getPrice()), " ", getString(R.string.kr)));
         ((TextView) findViewById(R.id.location)).setText(mProduct.getContactInfo().getCity());
-        findViewById(R.id.photo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(OneProductActivity.this, ProductDetailsActivity.class);
-                intent.putExtra(ProductDetailsActivity.EXTRA_TITLE, mProduct.getName());
-                intent.putExtra(ProductDetailsActivity.EXTRA_DESCRIPTION, mProduct.getDescription());
-                intent.putExtra(ProductDetailsActivity.EXTRA_PHOTOS, mProduct.getPhotos());
-                OneProductActivity.this.startActivity(intent);
-            }
+        findViewById(R.id.photo).setOnClickListener(v -> {
+            Intent intent = new Intent(OneProductActivity.this, ProductDetailsActivity.class);
+            intent.putExtra(ProductDetailsActivity.EXTRA_TITLE, mProduct.getName());
+            intent.putExtra(ProductDetailsActivity.EXTRA_DESCRIPTION, mProduct.getDescription());
+            intent.putExtra(ProductDetailsActivity.EXTRA_PHOTOS, mProduct.getPhotos());
+            OneProductActivity.this.startActivity(intent);
         });
 
         if (mProduct.getStatus() > 0) {
             findViewById(R.id.bid).setVisibility(View.GONE);
         }
-        findViewById(R.id.bid).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (BaseActivity.getOutgoingBids().contains(mProduct.getId())) {
-                    DialogHelper.showDialogWithCloseAndDone(OneProductActivity.this, R.string.warning,
-                            R.string.you_have_active_bid, null);
-                    return;
-                }
-                if (mSeller != null) {
-                    placeBid(true, false);
-                }
+        findViewById(R.id.bid).setOnClickListener(v -> {
+            if (BaseActivity.getOutgoingBids().contains(mProduct.getId())) {
+                DialogHelper.showDialogWithCloseAndDone(OneProductActivity.this, R.string.warning,
+                        R.string.you_have_active_bid, null);
+                return;
+            }
+            if (mSeller != null) {
+                placeBid(true, false);
             }
         });
     }
@@ -181,12 +167,9 @@ public class OneProductActivity extends BaseActivity {
         findViewById(R.id.plus_member).setVisibility(mSeller.isPlusMember() ? View.VISIBLE : View.INVISIBLE);
         ((TextView) findViewById(R.id.seller_name)).setText(mSeller.getName());
         ((RatingBar) findViewById(R.id.rating)).setRating(mSeller.getRating());
-        findViewById(R.id.seller_photo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SellerBuyerDialog uid = SellerBuyerDialog.newInstance(mSeller);
-                uid.show(getSupportFragmentManager(), uid.getClass().getSimpleName());
-            }
+        findViewById(R.id.seller_photo).setOnClickListener(v -> {
+            SellerBuyerDialog uid = SellerBuyerDialog.newInstance(mSeller);
+            uid.show(getSupportFragmentManager(), uid.getClass().getSimpleName());
         });
     }
 
@@ -280,20 +263,17 @@ public class OneProductActivity extends BaseActivity {
         childUpdates.put("bid-outgoing/" + User.getLocalUser().getId() + "/" + key, bidMap);
         childUpdates.put("bid-incoming/" + mProduct.getUserId() + "/" + key, bidMap);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    DialogHelper.showDialogWithCloseAndDone(OneProductActivity.this, R.string.warning, task
-                            .getException() != null && task.getException().getMessage() != null ?
-                            task.getException().getMessage() : getString(R.string.error_unknown), null);
-                }
-
-                Counters.getInstance().increaseOutgoingBidsCount();
-
-                // todo payment gateway
-                changeStatusAfterSuccessfulPayment(key);
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                DialogHelper.showDialogWithCloseAndDone(OneProductActivity.this, R.string.warning, task
+                        .getException() != null && task.getException().getMessage() != null ?
+                        task.getException().getMessage() : getString(R.string.error_unknown), null);
             }
+
+            Counters.getInstance().increaseOutgoingBidsCount();
+
+            // todo payment gateway
+            changeStatusAfterSuccessfulPayment(key);
         });
     }
 
@@ -302,20 +282,17 @@ public class OneProductActivity extends BaseActivity {
         childUpdates.put("bid-outgoing/" + User.getLocalUser().getId() + "/" + key + "/status", 1);
         childUpdates.put("bid-incoming/" + mProduct.getUserId() + "/" + key + "/status", 1);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    DialogHelper.showDialogWithCloseAndDone(OneProductActivity.this, R.string.warning, task
-                            .getException() != null && task.getException().getMessage() != null ?
-                            task.getException().getMessage() : getString(R.string.error_unknown), null);
-                }
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                DialogHelper.showDialogWithCloseAndDone(OneProductActivity.this, R.string.warning, task
+                        .getException() != null && task.getException().getMessage() != null ?
+                        task.getException().getMessage() : getString(R.string.error_unknown), null);
+            }
 
-                if (SwiprApp.getInstance().getSp().getBoolean(Constants.Prefs.SHOW_BID_SUCCESSFUL_ALERT, true)) {
-                    BidSuccessfulDialog bidSuccessfulDialog = new BidSuccessfulDialog();
-                    bidSuccessfulDialog.show(getSupportFragmentManager(),
-                            bidSuccessfulDialog.getClass().getSimpleName());
-                }
+            if (SwiprApp.getInstance().getSp().getBoolean(Constants.Prefs.SHOW_BID_SUCCESSFUL_ALERT, true)) {
+                BidSuccessfulDialog bidSuccessfulDialog = new BidSuccessfulDialog();
+                bidSuccessfulDialog.show(getSupportFragmentManager(),
+                        bidSuccessfulDialog.getClass().getSimpleName());
             }
         });
     }

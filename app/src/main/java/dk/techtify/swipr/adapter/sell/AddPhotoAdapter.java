@@ -3,7 +3,6 @@ package dk.techtify.swipr.adapter.sell;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,9 +127,9 @@ public class AddPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public PhotoHolder(View itemView) {
             super(itemView);
-            root = (LinearLayout) itemView.findViewById(R.id.root);
-            photo = (RoundedImageView) itemView.findViewById(R.id.photo);
-            remove = (ImageButton) itemView.findViewById(R.id.remove);
+            root = itemView.findViewById(R.id.root);
+            photo = itemView.findViewById(R.id.photo);
+            remove = itemView.findViewById(R.id.remove);
             photo.setOnClickListener(this);
             remove.setOnClickListener(this);
         }

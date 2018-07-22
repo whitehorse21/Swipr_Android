@@ -11,13 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.wunderlist.slidinglayer.SlidingLayer;
 
@@ -27,7 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import dk.techtify.swipr.R;
-import dk.techtify.swipr.helper.DateTimeHelper;
 import dk.techtify.swipr.helper.DisplayHelper;
 import dk.techtify.swipr.helper.GlideApp;
 import dk.techtify.swipr.model.ServerTime;
@@ -150,29 +142,26 @@ public class ActiveBidsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public ActivePostHolder(View itemView) {
             super(itemView);
 
-            root = (FrameLayout) itemView.findViewById(R.id.root);
-            swipeable = (SlidingLayer) itemView.findViewById(R.id.swipeable);
+            root = itemView.findViewById(R.id.root);
+            swipeable = itemView.findViewById(R.id.swipeable);
             alphable = itemView.findViewById(R.id.alphable);
-            photo = (ImageView) itemView.findViewById(R.id.photo);
+            photo = itemView.findViewById(R.id.photo);
             delete = itemView.findViewById(R.id.delete);
-            time = (CounterTextView) itemView.findViewById(R.id.time);
-            brand = (TextView) itemView.findViewById(R.id.brand);
-            initialPrice = (TextView) itemView.findViewById(R.id.initial_price);
-            bid = (TextView) itemView.findViewById(R.id.bid);
+            time = itemView.findViewById(R.id.time);
+            brand = itemView.findViewById(R.id.brand);
+            initialPrice = itemView.findViewById(R.id.initial_price);
+            bid = itemView.findViewById(R.id.bid);
 
             width = DisplayHelper.getScreenResolution(mContext)[0];
             offset = width - DisplayHelper.dpToPx(mContext, 96);
 
             swipeable.openLayer(false);
             swipeable.setOffsetDistance(offset);
-            swipeable.setOnScrollListener(new SlidingLayer.OnScrollListener() {
-                @Override
-                public void onScroll(final int absoluteScroll) {
-                    mParentSwipeListener.onParentSwipeEnable(!(absoluteScroll < width));
+            swipeable.setOnScrollListener(absoluteScroll -> {
+                mParentSwipeListener.onParentSwipeEnable(!(absoluteScroll < width));
 
-                    float relativeScroll = (float) absoluteScroll / (float) width;
-                    alphable.setAlpha(relativeScroll);
-                }
+                float relativeScroll = (float) absoluteScroll / (float) width;
+                alphable.setAlpha(relativeScroll);
             });
 
             delete.setOnClickListener(this);

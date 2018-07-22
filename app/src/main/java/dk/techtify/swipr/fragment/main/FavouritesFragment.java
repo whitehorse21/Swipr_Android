@@ -56,21 +56,15 @@ public class FavouritesFragment extends Fragment implements ActionView.ActionCli
         mBack = view.findViewById(R.id.back);
         mForward = view.findViewById(R.id.forward);
 
-        mBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mItemPager.getCurrentItem() > 0) {
-                    mItemPager.setCurrentItem(mItemPager.getCurrentItem() - 1, true);
-                }
+        mBack.setOnClickListener(view12 -> {
+            if (mItemPager.getCurrentItem() > 0) {
+                mItemPager.setCurrentItem(mItemPager.getCurrentItem() - 1, true);
             }
         });
 
-        mForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mItemPager.getCurrentItem() < mAdapter.getCount() - 1) {
-                    mItemPager.setCurrentItem(mItemPager.getCurrentItem() + 1, true);
-                }
+        mForward.setOnClickListener(view1 -> {
+            if (mItemPager.getCurrentItem() < mAdapter.getCount() - 1) {
+                mItemPager.setCurrentItem(mItemPager.getCurrentItem() + 1, true);
             }
         });
 
@@ -78,7 +72,7 @@ public class FavouritesFragment extends Fragment implements ActionView.ActionCli
             mAdapter = new StoreItemHolderAdapter(getChildFragmentManager(), false);
         }
 
-        mItemPager = (ViewPager) view.findViewById(R.id.pager);
+        mItemPager = view.findViewById(R.id.pager);
         mItemPager.setAdapter(mAdapter);
         mItemPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

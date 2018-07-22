@@ -22,39 +22,23 @@ public class LoginMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(DisplayHelper.isScreenSmall() ? R.layout.fragment_login_main_small : R.layout.fragment_login_main, null);
 
-        view.findViewById(R.id.facebook).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    ((LoginActivity) getActivity()).getLoginButton().performClick();
-                }
+        view.findViewById(R.id.facebook).setOnClickListener(view14 -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                ((LoginActivity) getActivity()).getLoginButton().performClick();
             }
         });
 
-        view.findViewById(R.id.create).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentHelper.replaceFragment(getActivity(), new CreateProfileFragment(),
-                        R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                        R.anim.slide_out_right);
-            }
-        });
+        view.findViewById(R.id.create).setOnClickListener(view13 -> FragmentHelper.replaceFragment(getActivity(), new CreateProfileFragment(),
+                R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
+                R.anim.slide_out_right));
 
-        view.findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentHelper.replaceFragment(getActivity(), new LoginFragment(),
-                        R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                        R.anim.slide_out_right);
-            }
-        });
+        view.findViewById(R.id.login).setOnClickListener(view12 -> FragmentHelper.replaceFragment(getActivity(), new LoginFragment(),
+                R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
+                R.anim.slide_out_right));
 
-        view.findViewById(R.id.anonymous_login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    ((LoginActivity) getActivity()).anonymousLogin();
-                }
+        view.findViewById(R.id.anonymous_login).setOnClickListener(view1 -> {
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                ((LoginActivity) getActivity()).anonymousLogin();
             }
         });
 

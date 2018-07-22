@@ -70,24 +70,21 @@ public class SellSizeFragment extends Fragment implements SizePickerDialog.SizeS
 
         final View view = inflater.inflate(R.layout.fragment_sell_size, null);
 
-        mSizeTv = (TextView) view.findViewById(R.id.size);
+        mSizeTv = view.findViewById(R.id.size);
         mSizeTv.setHint(mScale.get(mScale.size() / 2));
         if (mProduct.getSize() != null && mPosition == mProduct.getSizeScalePosition()) {
             onSizeSelected(mProduct.getSizePosition(), mProduct.getSize());
         }
-        mSizeTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mViewPager.getCurrentItem() == mPosition) {
-                    SizePickerDialog spd = SizePickerDialog.newInstance(mScale,
-                            mProduct.getSizePosition() > -1 && mProduct.getSizeScalePosition() ==
-                                    mPosition ? mProduct.getSizePosition() : mScale
-                                    .size() / 2);
-                    spd.setSizeSelectedListener(SellSizeFragment.this);
-                    spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
-                } else {
-                    mViewPager.setCurrentItem(mPosition);
-                }
+        mSizeTv.setOnClickListener(view1 -> {
+            if (mViewPager.getCurrentItem() == mPosition) {
+                SizePickerDialog spd = SizePickerDialog.newInstance(mScale,
+                        mProduct.getSizePosition() > -1 && mProduct.getSizeScalePosition() ==
+                                mPosition ? mProduct.getSizePosition() : mScale
+                                .size() / 2);
+                spd.setSizeSelectedListener(SellSizeFragment.this);
+                spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
+            } else {
+                mViewPager.setCurrentItem(mPosition);
             }
         });
 

@@ -10,9 +10,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -22,22 +20,20 @@ import android.widget.TextView;
 
 import java.io.File;
 
-import dk.techtify.swipr.AppConfig;
 import dk.techtify.swipr.Constants;
 import dk.techtify.swipr.R;
-import dk.techtify.swipr.SwiprApp;
 import dk.techtify.swipr.activity.MainActivity;
-import dk.techtify.swipr.dialog.sell.SellPriceDialog;
 import dk.techtify.swipr.dialog.main.SwiprPlusDialog;
+import dk.techtify.swipr.dialog.sell.SellPriceDialog;
 import dk.techtify.swipr.dialog.sell.UploadProductDialog;
 import dk.techtify.swipr.helper.BitmapHelper;
 import dk.techtify.swipr.helper.DialogHelper;
 import dk.techtify.swipr.helper.IntentHelper;
 import dk.techtify.swipr.helper.NetworkHelper;
-import dk.techtify.swipr.model.user.Counters;
-import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.model.sell.Photo;
 import dk.techtify.swipr.model.sell.Product;
+import dk.techtify.swipr.model.user.Counters;
+import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.view.ActionView;
 
 /**
@@ -79,22 +75,18 @@ public class SellAdditionalInfoFragment extends Fragment implements ActionView.A
 
         final View view = inflater.inflate(R.layout.fragment_sell_additional_info, null);
 
-        mRootScrollView = (ScrollView) view.findViewById(R.id.scroll_view);
+        mRootScrollView = view.findViewById(R.id.scroll_view);
 
         mMoreLayout = view.findViewById(R.id.more_visibility_layout);
         if (User.getLocalUser().isPlusMember()) {
             mMoreLayout.setVisibility(View.GONE);
         }
 
-        mDescriptionCount = (TextView) view.findViewById(R.id.description_counter);
-        mDescription = (EditText) view.findViewById(R.id.description);
-        mDescription.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                (v.getParent()).getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
+        mDescriptionCount = view.findViewById(R.id.description_counter);
+        mDescription = view.findViewById(R.id.description);
+        mDescription.setOnTouchListener((v, event) -> {
+            (v.getParent()).getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
         });
         mDescription.setMovementMethod(new ScrollingMovementMethod());
         mDescription.addTextChangedListener(new TextWatcher() {
@@ -128,15 +120,12 @@ public class SellAdditionalInfoFragment extends Fragment implements ActionView.A
             mDescription.setText(mProduct.getDescription());
         }
 
-        mPrice = (TextView) view.findViewById(R.id.price);
-        mPrice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SellPriceDialog spd = new SellPriceDialog();
-                spd.setPriceListener(SellAdditionalInfoFragment.this);
-                spd.setDefaultValue(mProduct.getPrice());
-                spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
-            }
+        mPrice = view.findViewById(R.id.price);
+        mPrice.setOnClickListener(view12 -> {
+            SellPriceDialog spd = new SellPriceDialog();
+            spd.setPriceListener(SellAdditionalInfoFragment.this);
+            spd.setDefaultValue(mProduct.getPrice());
+            spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
         });
         if (mProduct.getPrice() > 0) {
             onPriceSet(mProduct.getPrice());
@@ -187,68 +176,51 @@ public class SellAdditionalInfoFragment extends Fragment implements ActionView.A
         mSwiprPlus = view.findViewById(R.id.swipr_plus);
         mOrLayout = view.findViewById(R.id.or_layout);
 
-        mPayCheckBox = (CheckBox) view.findViewById(R.id.pay);
+        mPayCheckBox = view.findViewById(R.id.pay);
         if (mProduct.getVisibilityMode() == Product.VISIBILITY_MODE_PAID_BOOSTER) {
             oneTimePurchaseSuccessful();
         }
-        mPayCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mPayCheckBox.isChecked()) {
-                    mPayCheckBox.setChecked(false);
-                    ((MainActivity) getActivity()).openPurchaseDialog(Constants.Purchase.ONE_TIME_PRODUCT_BOOSTER);
-                }
+        mPayCheckBox.setOnClickListener(v -> {
+            if (mPayCheckBox.isChecked()) {
+                mPayCheckBox.setChecked(false);
+                ((MainActivity) getActivity()).openPurchaseDialog(Constants.Purchase.ONE_TIME_PRODUCT_BOOSTER);
             }
         });
 
-        mSwiprPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mSwiprPlus.setOnClickListener(view1 -> {
+            SwiprPlusDialog spd = new SwiprPlusDialog();
+            spd.setDealListener((MainActivity) getActivity());
+            spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
+        });
+
+        view.findViewById(R.id.next).setOnClickListener(v -> {
+            if (!User.getLocalUser().isPlusMember() && Counters.getInstance().getActivePosts() > 4) {
                 SwiprPlusDialog spd = new SwiprPlusDialog();
                 spd.setDealListener((MainActivity) getActivity());
                 spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
+                return;
             }
-        });
+            if (mProduct.getDescription() == null || mProduct.getDescription().trim().length() < 24) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                        R.string.add_description, null);
+            } else if (mProduct.getPrice() == 0) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                        R.string.set_price, null);
+            } else if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                mProduct.setVisibilityMode(User.getLocalUser().isPlusMember() ? Product
+                        .VISIBILITY_MODE_PLUS_BOOSTER : (mPayCheckBox.isChecked() ? Product
+                        .VISIBILITY_MODE_PAID_BOOSTER : Product.VISIBILITY_MODE_REGULAR));
 
-        view.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!User.getLocalUser().isPlusMember() && Counters.getInstance().getActivePosts() > 4) {
-                    SwiprPlusDialog spd = new SwiprPlusDialog();
-                    spd.setDealListener((MainActivity) getActivity());
-                    spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
-                    return;
-                }
-                if (mProduct.getDescription() == null || mProduct.getDescription().trim().length() < 24) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                            R.string.add_description, null);
-                } else if (mProduct.getPrice() == 0) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                            R.string.set_price, null);
-                } else if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    mProduct.setVisibilityMode(User.getLocalUser().isPlusMember() ? Product
-                            .VISIBILITY_MODE_PLUS_BOOSTER : (mPayCheckBox.isChecked() ? Product
-                            .VISIBILITY_MODE_PAID_BOOSTER : Product.VISIBILITY_MODE_REGULAR));
+                UploadProductDialog upd = new UploadProductDialog();
+                upd.setProduct(mProduct);
+                upd.setDoneListener(() -> new Handler().post(() -> {
+                    getActivity().onBackPressed();
+                    getActivity().onBackPressed();
 
-                    UploadProductDialog upd = new UploadProductDialog();
-                    upd.setProduct(mProduct);
-                    upd.setDoneListener(new UploadProductDialog.DoneListener() {
-                        @Override
-                        public void onUploadingDone() {
-                            new Handler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getActivity().onBackPressed();
-                                    getActivity().onBackPressed();
-
-                                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.success,
-                                            R.string.product_added_to_the_store, null);
-                                }
-                            });
-                        }
-                    });
-                    upd.show(getActivity().getSupportFragmentManager(), upd.getClass().getSimpleName());
-                }
+                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.success,
+                            R.string.product_added_to_the_store, null);
+                }));
+                upd.show(getActivity().getSupportFragmentManager(), upd.getClass().getSimpleName());
             }
         });
 
@@ -280,23 +252,17 @@ public class SellAdditionalInfoFragment extends Fragment implements ActionView.A
         final AlertDialog progress = DialogHelper.getProgressDialog(getContext());
         DialogHelper.showProgressDialog(getContext(), progress);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final File file = BitmapHelper.saveBitmapToCache(getContext(), bitmap);
-                bitmap.recycle();
+        new Thread(() -> {
+            final File file = BitmapHelper.saveBitmapToCache(getContext(), bitmap);
+            bitmap.recycle();
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (SellAdditionalInfoFragment.this.isAdded()) {
-                            progress.dismiss();
+            getActivity().runOnUiThread(() -> {
+                if (SellAdditionalInfoFragment.this.isAdded()) {
+                    progress.dismiss();
 
-                            IntentHelper.shareFile(getActivity(), file);
-                        }
-                    }
-                });
-            }
+                    IntentHelper.shareFile(getActivity(), file);
+                }
+            });
         }).start();
     }
 

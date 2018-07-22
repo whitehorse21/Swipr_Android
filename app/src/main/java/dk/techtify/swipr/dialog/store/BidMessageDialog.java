@@ -56,39 +56,23 @@ public class BidMessageDialog extends BaseDialog {
         }
         View view = inflater.inflate(R.layout.dialog_bid_message, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCancelBid = true;
-                getDialog().dismiss();
-            }
+        view.findViewById(R.id.close).setOnClickListener(view13 -> {
+            mCancelBid = true;
+            getDialog().dismiss();
         });
 
-        view.findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.back).setOnClickListener(view12 -> getDialog().dismiss());
 
-        final EditText message = (EditText) view.findViewById(R.id.message);
+        final EditText message = view.findViewById(R.id.message);
         if (mBid.getMessage() != null) {
             message.setText(mBid.getMessage());
             message.setSelection(message.getText().toString().length());
         }
-        message.post(new Runnable() {
-            @Override
-            public void run() {
-                IoHelper.showKeyboard(getActivity(), message);
-            }
-        });
+        message.post(() -> IoHelper.showKeyboard(getActivity(), message));
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMessageListener.onMessageAdded(message.getText().toString().trim());
-                getDialog().dismiss();
-            }
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> {
+            mMessageListener.onMessageAdded(message.getText().toString().trim());
+            getDialog().dismiss();
         });
 
         return view;

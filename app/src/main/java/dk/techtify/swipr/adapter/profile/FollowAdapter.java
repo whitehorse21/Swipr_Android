@@ -1,10 +1,8 @@
 package dk.techtify.swipr.adapter.profile;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -143,11 +136,11 @@ public class FollowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         public ProductTypeHolder(View itemView) {
             super(itemView);
-            root = (FrameLayout) itemView.findViewById(R.id.root);
-            clickable = (LinearLayout) itemView.findViewById(R.id.clickable);
-            photo = (ImageView) itemView.findViewById(R.id.photo);
-            name = (TextView) itemView.findViewById(R.id.name);
-            follow = (CheckBox) itemView.findViewById(R.id.follow);
+            root = itemView.findViewById(R.id.root);
+            clickable = itemView.findViewById(R.id.clickable);
+            photo = itemView.findViewById(R.id.photo);
+            name = itemView.findViewById(R.id.name);
+            follow = itemView.findViewById(R.id.follow);
             follow.setOnClickListener(this);
             if (mMode == MODE_MESSAGE) {
                 clickable.setOnClickListener(this);
@@ -217,16 +210,13 @@ public class FollowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         childUpdates.put("counter/" + user.getId() + "/following/", Counters.getInstance().getFollowing() + 1);
         childUpdates.put("counter/" + follower.getId() + "/followers/", count + 1);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    view.setChecked(!view.isChecked());
-                    follower.setFollowing(view.isChecked());
-                }
-
-                view.setEnabled(true);
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                view.setChecked(!view.isChecked());
+                follower.setFollowing(view.isChecked());
             }
+
+            view.setEnabled(true);
         });
     }
 
@@ -239,16 +229,13 @@ public class FollowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         childUpdates.put("counter/" + user.getId() + "/following/", Counters.getInstance().getFollowing() - 1);
         childUpdates.put("counter/" + follower.getId() + "/followers/", count - 1);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    view.setChecked(!view.isChecked());
-                    follower.setFollowing(view.isChecked());
-                }
-
-                view.setEnabled(true);
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                view.setChecked(!view.isChecked());
+                follower.setFollowing(view.isChecked());
             }
+
+            view.setEnabled(true);
         });
     }
 

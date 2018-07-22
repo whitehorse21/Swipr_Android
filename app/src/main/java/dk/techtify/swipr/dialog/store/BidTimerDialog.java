@@ -58,23 +58,15 @@ public class BidTimerDialog extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_bid_timer, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCancelBid = true;
-                getDialog().dismiss();
-            }
+        view.findViewById(R.id.close).setOnClickListener(view13 -> {
+            mCancelBid = true;
+            getDialog().dismiss();
         });
 
-        view.findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.back).setOnClickListener(view12 -> getDialog().dismiss());
 
-        final MaterialNumberPicker hoursPicker = (MaterialNumberPicker) view.findViewById(R.id.hours);
-        final MaterialNumberPicker minutesPicker = (MaterialNumberPicker) view.findViewById(R.id.minutes);
+        final MaterialNumberPicker hoursPicker = view.findViewById(R.id.hours);
+        final MaterialNumberPicker minutesPicker = view.findViewById(R.id.minutes);
 
         hoursPicker.setWrapSelectorWheel(true);
         hoursPicker.setValue(getArguments().getInt(POSITION_H));
@@ -82,12 +74,9 @@ public class BidTimerDialog extends BaseDialog {
         minutesPicker.setValue(getArguments().getInt(POSITION_M));
         minutesPicker.setDisplayedValues(Constants.BID_MINS_ARRAY);
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mTimeSelectedListener.onTimeSelected(hoursPicker.getValue(), minutesPicker.getValue());
-                getDialog().dismiss();
-            }
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> {
+            mTimeSelectedListener.onTimeSelected(hoursPicker.getValue(), minutesPicker.getValue());
+            getDialog().dismiss();
         });
 
         return view;

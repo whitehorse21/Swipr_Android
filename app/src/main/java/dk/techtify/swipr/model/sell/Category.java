@@ -1,7 +1,6 @@
 package dk.techtify.swipr.model.sell;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 

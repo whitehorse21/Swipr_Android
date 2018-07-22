@@ -24,7 +24,6 @@ import dk.techtify.swipr.adapter.FaqAdapter;
 import dk.techtify.swipr.helper.NetworkHelper;
 import dk.techtify.swipr.model.Faq;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
@@ -49,19 +48,16 @@ public class FaqFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_faq, null);
 
         mQuestions = Realm.getDefaultInstance().where(Faq.class).findAllAsync();
-        mQuestions.addChangeListener(new RealmChangeListener<RealmResults<Faq>>() {
-            @Override
-            public void onChange(RealmResults<Faq> element) {
-                if (mRecycler.getAdapter() == null) {
-                    mAdapter = new FaqAdapter(getActivity(), element);
-                    mRecycler.setAdapter(mAdapter);
-                } else {
-                    mRecycler.getAdapter().notifyDataSetChanged();
-                }
+        mQuestions.addChangeListener(element -> {
+            if (mRecycler.getAdapter() == null) {
+                mAdapter = new FaqAdapter(getActivity(), element);
+                mRecycler.setAdapter(mAdapter);
+            } else {
+                mRecycler.getAdapter().notifyDataSetChanged();
             }
         });
 
-        mRecycler = (RecyclerView) view.findViewById(R.id.recycler);
+        mRecycler = view.findViewById(R.id.recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         if (NetworkHelper.isOnline(getActivity(), NetworkHelper.NONE)) {

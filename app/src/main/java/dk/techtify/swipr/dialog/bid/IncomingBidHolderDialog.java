@@ -38,7 +38,7 @@ public class IncomingBidHolderDialog extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_incoming_bid_holder, null);
 
-        mPager = (ViewPager) view.findViewById(R.id.incoming_bid_pager);
+        mPager = view.findViewById(R.id.incoming_bid_pager);
         mAdapter = new IncomingBidHolderAdapter(getChildFragmentManager());
         mAdapter.addAllBids(mIncomingBids);
         mPager.setAdapter(mAdapter);

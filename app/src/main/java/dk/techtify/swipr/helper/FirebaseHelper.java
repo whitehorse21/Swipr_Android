@@ -1,9 +1,5 @@
 package dk.techtify.swipr.helper;
 
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -217,61 +213,58 @@ public class FirebaseHelper {
     public static void increaseRating(String productId, boolean amIseller, final String userId, final int rating, final OnSuccessListener listener) {
         FirebaseDatabase.getInstance().getReference().child("user-product").child(amIseller ? User
                 .getLocalUser().getId() : userId).child(productId).child(amIseller ? "ratingLeftBySeller" : "ratingLeftByBuyer")
-                .setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    return;
-                }
-
-                FirebaseDatabase.getInstance().getReference().child("user-data").child(userId).child("ratingTotal")
-                        .runTransaction(new Transaction.Handler() {
-                            @Override
-                            public Transaction.Result doTransaction(MutableData mutableData) {
-                                Integer value = mutableData.getValue(Integer.class);
-                                if (value == null) {
-                                    value = 0;
-                                }
-
-                                value += rating;
-
-                                mutableData.setValue(value);
-                                return Transaction.success(mutableData);
-                            }
-
-                            @Override
-                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                                if (databaseError != null) {
-                                    return;
-                                }
-                                FirebaseDatabase.getInstance().getReference().child("user-data").child(userId).child("ratingVotesNumber")
-                                        .runTransaction(new Transaction.Handler() {
-                                            @Override
-                                            public Transaction.Result doTransaction(MutableData mutableData) {
-                                                Integer value = mutableData.getValue(Integer.class);
-                                                if (value == null) {
-                                                    value = 0;
-                                                }
-
-                                                value += 1;
-
-                                                mutableData.setValue(value);
-                                                return Transaction.success(mutableData);
-                                            }
-
-                                            @Override
-                                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                                                if (databaseError != null) {
-                                                    return;
-                                                }
-                                                if (listener != null) {
-                                                    listener.onSuccess();
-                                                }
-                                            }
-                                        });
-                            }
-                        });
+                .setValue(true).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                return;
             }
+
+            FirebaseDatabase.getInstance().getReference().child("user-data").child(userId).child("ratingTotal")
+                    .runTransaction(new Transaction.Handler() {
+                        @Override
+                        public Transaction.Result doTransaction(MutableData mutableData) {
+                            Integer value = mutableData.getValue(Integer.class);
+                            if (value == null) {
+                                value = 0;
+                            }
+
+                            value += rating;
+
+                            mutableData.setValue(value);
+                            return Transaction.success(mutableData);
+                        }
+
+                        @Override
+                        public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                            if (databaseError != null) {
+                                return;
+                            }
+                            FirebaseDatabase.getInstance().getReference().child("user-data").child(userId).child("ratingVotesNumber")
+                                    .runTransaction(new Transaction.Handler() {
+                                        @Override
+                                        public Transaction.Result doTransaction(MutableData mutableData) {
+                                            Integer value = mutableData.getValue(Integer.class);
+                                            if (value == null) {
+                                                value = 0;
+                                            }
+
+                                            value += 1;
+
+                                            mutableData.setValue(value);
+                                            return Transaction.success(mutableData);
+                                        }
+
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                                            if (databaseError != null) {
+                                                return;
+                                            }
+                                            if (listener != null) {
+                                                listener.onSuccess();
+                                            }
+                                        }
+                                    });
+                        }
+                    });
         });
     }
 }

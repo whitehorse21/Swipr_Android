@@ -1,21 +1,16 @@
 package dk.techtify.swipr.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import dk.techtify.swipr.Constants;
 import dk.techtify.swipr.R;
-import dk.techtify.swipr.SwiprApp;
-import dk.techtify.swipr.helper.DisplayHelper;
 
 /**
  * Created by Pavel on 1/4/2017.
@@ -30,11 +25,8 @@ public abstract class BaseDialog extends DialogFragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogSlidingAnimation;
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface d) {
+        dialog.setOnShowListener(d -> {
 
-            }
         });
 
         return dialog;

@@ -31,8 +31,8 @@ import java.util.Map;
 
 import dk.techtify.swipr.AppConfig;
 import dk.techtify.swipr.R;
-import dk.techtify.swipr.activity.MainActivity;
 import dk.techtify.swipr.activity.ChatActivity;
+import dk.techtify.swipr.activity.MainActivity;
 import dk.techtify.swipr.activity.profile.FollowersActivity;
 import dk.techtify.swipr.adapter.chat.ChatRoomAdapter;
 import dk.techtify.swipr.helper.DialogHelper;
@@ -75,16 +75,11 @@ public class MessagesFragment extends Fragment implements ActionView.ActionClick
 
         mProgressBar = view.findViewById(R.id.progress);
 
-        mRecycler = (RecyclerView) view.findViewById(R.id.recycler);
+        mRecycler = view.findViewById(R.id.recycler);
         final SwipeLinearLayoutManager layoutManager = new SwipeLinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         mRecycler.setLayoutManager(layoutManager);
-        mAdapter = new ChatRoomAdapter(getActivity(), this, new ChatRoomAdapter.ParentSwipeListener() {
-            @Override
-            public void onParentSwipeEnable(boolean enable) {
-                layoutManager.setScrollEnabled(enable);
-            }
-        }, this);
+        mAdapter = new ChatRoomAdapter(getActivity(), this, layoutManager::setScrollEnabled, this);
         mRecycler.setAdapter(mAdapter);
 
         if (mAdapter.getItemCount() == 0) {
@@ -104,21 +99,21 @@ public class MessagesFragment extends Fragment implements ActionView.ActionClick
     private ChildEventListener mChildEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            mAdapter.add(new ChatRoom(dataSnapshot.getKey().toString(), (Map<String, Object>)
+            mAdapter.add(new ChatRoom(dataSnapshot.getKey(), (Map<String, Object>)
                     dataSnapshot.getValue()));
             mRecycler.scrollToPosition(0);
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            mAdapter.add(new ChatRoom(dataSnapshot.getKey().toString(), (Map<String, Object>)
+            mAdapter.add(new ChatRoom(dataSnapshot.getKey(), (Map<String, Object>)
                     dataSnapshot.getValue()));
             mRecycler.scrollToPosition(0);
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-            mAdapter.removeItem(dataSnapshot.getKey().toString());
+            mAdapter.removeItem(dataSnapshot.getKey());
         }
 
         @Override
@@ -172,9 +167,8 @@ public class MessagesFragment extends Fragment implements ActionView.ActionClick
 
                     List<ChatRoom> newRooms = new ArrayList<>();
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    Iterator it = map.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
+                    for (Object o : map.entrySet()) {
+                        Map.Entry pair = (Map.Entry) o;
                         newRooms.add(new ChatRoom(pair.getKey().toString(),
                                 (Map<String, Object>) pair.getValue()));
                     }

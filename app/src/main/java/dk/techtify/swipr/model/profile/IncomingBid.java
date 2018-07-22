@@ -12,7 +12,6 @@ import dk.techtify.swipr.helper.FirebaseHelper;
 import dk.techtify.swipr.model.ServerTime;
 import dk.techtify.swipr.model.sell.Brand;
 import dk.techtify.swipr.model.sell.ProductType;
-import dk.techtify.swipr.model.user.Counters;
 import dk.techtify.swipr.model.user.User;
 
 /**
@@ -62,11 +61,11 @@ public class IncomingBid extends Handler {
         status = map.containsKey("status") ? (Long) map.get("status") : 0;
         brand = new Brand(map.containsKey("brandId") ? map.get("brandId").toString() : "",
                 map.containsKey("brandName") ? (HashMap<String, Object>) map.get("brandName") :
-                        new HashMap<String, Object>());
+                        new HashMap<>());
         type = new ProductType();
         type.setId(map.containsKey("typeId") ? map.get("typeId").toString() : "");
         type.setLocalizedNames(map.containsKey("typeName") ? (HashMap<String, Object>) map.get(
-                "typeName") : new HashMap<String, Object>());
+                "typeName") : new HashMap<>());
 
         sendEmptyMessageDelayed(0, expiresIn());
     }

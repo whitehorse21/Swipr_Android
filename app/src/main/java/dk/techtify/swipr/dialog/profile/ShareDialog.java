@@ -33,54 +33,34 @@ public class ShareDialog extends BaseDialog {
 
         final String shareText = "http://Share.URL";
 
-        view.findViewById(R.id.whatsapp).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                IntentHelper.shareTextViaWhatsApp(getActivity(), shareText);
-            }
+        view.findViewById(R.id.whatsapp).setOnClickListener(v -> {
+            getDialog().dismiss();
+            IntentHelper.shareTextViaWhatsApp(getActivity(), shareText);
         });
 
-        view.findViewById(R.id.facebook).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                IntentHelper.shareTextViaFacebook(getActivity(), shareText);
-            }
+        view.findViewById(R.id.facebook).setOnClickListener(v -> {
+            getDialog().dismiss();
+            IntentHelper.shareTextViaFacebook(getActivity(), shareText);
         });
 
-        view.findViewById(R.id.mail).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                IntentHelper.shareTextViaGmail(getActivity(), shareText);
-            }
+        view.findViewById(R.id.mail).setOnClickListener(v -> {
+            getDialog().dismiss();
+            IntentHelper.shareTextViaGmail(getActivity(), shareText);
         });
 
-        view.findViewById(R.id.message).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                IntentHelper.shareTextViaSms(getActivity(), shareText);
-            }
+        view.findViewById(R.id.message).setOnClickListener(v -> {
+            getDialog().dismiss();
+            IntentHelper.shareTextViaSms(getActivity(), shareText);
         });
 
-        view.findViewById(R.id.copy).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                IoHelper.copyToClipboard(getActivity(), shareText);
-                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.success,
-                        R.string.link_copied, null);
-            }
+        view.findViewById(R.id.copy).setOnClickListener(v -> {
+            getDialog().dismiss();
+            IoHelper.copyToClipboard(getActivity(), shareText);
+            DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.success,
+                    R.string.link_copied, null);
         });
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> getDialog().dismiss());
 
         return view;
     }

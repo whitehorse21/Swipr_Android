@@ -9,14 +9,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -84,7 +82,7 @@ public class SellSetProductTypeFragment extends Fragment implements ProductTypeA
 
         mEditableLayout = view.findViewById(R.id.editable_layout);
         mEditableClear = view.findViewById(R.id.clear);
-        mEditable = (EditText) view.findViewById(R.id.editable);
+        mEditable = view.findViewById(R.id.editable);
         mEditable.setHint(mMode == MODE_PRODUCT_TYPE ? R.string.add_product_type_hint
                 : R.string.add_brand_hint);
         mEditable.addTextChangedListener(new TextWatcher() {
@@ -104,48 +102,40 @@ public class SellSetProductTypeFragment extends Fragment implements ProductTypeA
 
             }
         });
-        mEditableClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mEditable.setText("");
-            }
-        });
-        mEditable.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE && mEditable.getText().toString().trim()
-                        .length() > 0) {
-                    if (mMode == MODE_PRODUCT_TYPE) {
-                        for (SellProductTypeBrand sptb : mList) {
-                            ProductType pt = (ProductType) sptb;
-                            if (pt.getDk().toLowerCase().equals(mEditable.getText().toString().trim())
-                                    || pt.getEn().toLowerCase().equals(mEditable.getText().toString().trim())) {
-                                returnResult(pt);
-                                return true;
-                            }
+        mEditableClear.setOnClickListener(view1 -> mEditable.setText(""));
+        mEditable.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE && mEditable.getText().toString().trim()
+                    .length() > 0) {
+                if (mMode == MODE_PRODUCT_TYPE) {
+                    for (SellProductTypeBrand sptb : mList) {
+                        ProductType pt = (ProductType) sptb;
+                        if (pt.getDk().toLowerCase().equals(mEditable.getText().toString().trim())
+                                || pt.getEn().toLowerCase().equals(mEditable.getText().toString().trim())) {
+                            returnResult(pt);
+                            return true;
                         }
-
-                        ProductType pt = new ProductType(mEditable.getText().toString().trim());
-                        returnResult(pt);
-                    } else {
-                        for (SellProductTypeBrand sptb : mList) {
-                            Brand b = (Brand) sptb;
-                            if (b.getEn().toLowerCase().equals(mEditable.getText().toString().trim())) {
-                                returnResult(b);
-                                return true;
-                            }
-                        }
-
-                        Brand brand = new Brand(mEditable.getText().toString().trim());
-                        returnResult(brand);
                     }
-                    return true;
+
+                    ProductType pt = new ProductType(mEditable.getText().toString().trim());
+                    returnResult(pt);
+                } else {
+                    for (SellProductTypeBrand sptb : mList) {
+                        Brand b = (Brand) sptb;
+                        if (b.getEn().toLowerCase().equals(mEditable.getText().toString().trim())) {
+                            returnResult(b);
+                            return true;
+                        }
+                    }
+
+                    Brand brand = new Brand(mEditable.getText().toString().trim());
+                    returnResult(brand);
                 }
-                return false;
+                return true;
             }
+            return false;
         });
 
-        mRecycler = (RecyclerView) view.findViewById(R.id.recycler);
+        mRecycler = view.findViewById(R.id.recycler);
         if (Build.VERSION.SDK_INT > 20) {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mRecycler.getLayoutParams();
             params.topMargin = -DisplayHelper.dpToPx(getActivity(), 24);
@@ -173,12 +163,9 @@ public class SellSetProductTypeFragment extends Fragment implements ProductTypeA
             getServerProducts();
         }
 
-        mRecycler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (SellSetProductTypeFragment.this.isAdded()) {
-                    mRecycler.setVisibility(View.VISIBLE);
-                }
+        mRecycler.postDelayed(() -> {
+            if (SellSetProductTypeFragment.this.isAdded()) {
+                mRecycler.setVisibility(View.VISIBLE);
             }
         }, 350);
 
@@ -231,14 +218,11 @@ public class SellSetProductTypeFragment extends Fragment implements ProductTypeA
         if (mIsFirstLaunch) {
             mIsFirstLaunch = false;
             mEditableLayout.setTranslationY(DisplayHelper.dpToPx(getActivity(), -8) + getArguments().getInt(TOP));
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    mEditableLayout.animate().translationY(0);
+            new Handler().post(() -> {
+                mEditableLayout.animate().translationY(0);
 
-                    IoHelper.showKeyboard(getActivity(), mEditable);
-                    mEditable.requestFocus();
-                }
+                IoHelper.showKeyboard(getActivity(), mEditable);
+                mEditable.requestFocus();
             });
         } else {
             mEditableLayout.setTranslationY(0);
@@ -265,10 +249,9 @@ public class SellSetProductTypeFragment extends Fragment implements ProductTypeA
                         return;
                     }
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    Iterator it = map.entrySet().iterator();
 
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
+                    for (Object o : map.entrySet()) {
+                        Map.Entry pair = (Map.Entry) o;
 
                         if (mMode == MODE_PRODUCT_TYPE) {
                             mList.add(new ProductType(pair.getKey().toString(), (Map<String, Object>) pair.getValue()));
@@ -277,12 +260,7 @@ public class SellSetProductTypeFragment extends Fragment implements ProductTypeA
                         }
                     }
                     mAdapter.addAll(mList);
-                    mRecycler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mRecycler.scrollTo(0, 0);
-                        }
-                    });
+                    mRecycler.post(() -> mRecycler.scrollTo(0, 0));
                 }
             }
 

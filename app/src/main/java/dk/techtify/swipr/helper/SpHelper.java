@@ -14,37 +14,31 @@ import dk.techtify.swipr.SwiprApp;
 public class SpHelper {
 
     public static void checkViewPreferences() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String todayKey = "views" + DateTimeHelper.getFormattedDate(System.currentTimeMillis(), "yyyyMMdd");
-                Map<String, ?> entries = SwiprApp.getInstance().getSp().getAll();
-                Set<String> keys = entries.keySet();
-                for (String key : keys) {
-                    if (key.contains("views") && !key.equals(todayKey)) {
-                        SwiprApp.getInstance().getSp().edit().remove(key).apply();
-                    }
+        new Thread(() -> {
+            final String todayKey = "views" + DateTimeHelper.getFormattedDate(System.currentTimeMillis(), "yyyyMMdd");
+            Map<String, ?> entries = SwiprApp.getInstance().getSp().getAll();
+            Set<String> keys = entries.keySet();
+            for (String key : keys) {
+                if (key.contains("views") && !key.equals(todayKey)) {
+                    SwiprApp.getInstance().getSp().edit().remove(key).apply();
                 }
             }
         }).start();
     }
 
     public static void removeKeys() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SharedPreferences.Editor editor = SwiprApp.getInstance().getSp().edit();
+        new Thread(() -> {
+            SharedPreferences.Editor editor = SwiprApp.getInstance().getSp().edit();
 
-                Map<String, ?> entries = SwiprApp.getInstance().getSp().getAll();
-                Set<String> keys = entries.keySet();
-                for (String key : keys) {
-                    if (!key.equals(Constants.Prefs.IS_SCREEN_SMALL) && !key.equals(Constants.Prefs.CONTENT_HEIGHT)) {
-                        editor.remove(key);
-                    }
+            Map<String, ?> entries = SwiprApp.getInstance().getSp().getAll();
+            Set<String> keys = entries.keySet();
+            for (String key : keys) {
+                if (!key.equals(Constants.Prefs.IS_SCREEN_SMALL) && !key.equals(Constants.Prefs.CONTENT_HEIGHT)) {
+                    editor.remove(key);
                 }
-
-                editor.apply();
             }
+
+            editor.apply();
         }).start();
     }
 }

@@ -39,7 +39,7 @@ public class DateTimeHelper {
         return cal;
     }
 
-    public static final String showMessageTime(Context context, boolean showAtForToday, long created) {
+    public static String showMessageTime(Context context, boolean showAtForToday, long created) {
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(created);
 

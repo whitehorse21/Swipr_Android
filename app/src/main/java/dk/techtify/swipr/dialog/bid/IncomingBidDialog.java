@@ -78,50 +78,35 @@ public class IncomingBidDialog extends Fragment {
 
         if (mPosition != mCounter - 1) {
             view.findViewById(R.id.next).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    scrollNext();
-                }
-            });
+            view.findViewById(R.id.next).setOnClickListener(v -> scrollNext());
         }
 
         if (mPosition != 0) {
             view.findViewById(R.id.previous).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.previous).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    scrollPrevious();
-                }
-            });
+            view.findViewById(R.id.previous).setOnClickListener(v -> scrollPrevious());
         }
 
         mPlusMemberView = view.findViewById(R.id.plus_member);
-        mBidderNameView = (TextView) view.findViewById(R.id.seller_name);
-        mBidderRatingView = (RatingBar) view.findViewById(R.id.rating);
-        mBidderImageView = (ImageView) view.findViewById(R.id.seller_photo);
-        mBidderCityView = (TextView) view.findViewById(R.id.address);
-        mBidderCreatedView = (TextView) view.findViewById(R.id.created);
+        mBidderNameView = view.findViewById(R.id.seller_name);
+        mBidderRatingView = view.findViewById(R.id.rating);
+        mBidderImageView = view.findViewById(R.id.seller_photo);
+        mBidderCityView = view.findViewById(R.id.address);
+        mBidderCreatedView = view.findViewById(R.id.created);
 
         view.findViewById(R.id.inc_shipping).setVisibility(mIncomingBid.isIncludeShipping() ? View.VISIBLE : View.INVISIBLE);
         if (mIncomingBid.getMessage() != null) {
-            TextView message = (TextView) view.findViewById(R.id.message);
+            TextView message = view.findViewById(R.id.message);
             message.setVisibility(View.VISIBLE);
             message.setText(mIncomingBid.getMessage());
-            message.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), getString(R.string.message),
-                            mIncomingBid.getMessage(), true, null);
-                }
-            });
+            message.setOnClickListener(v -> DialogHelper.showDialogWithCloseAndDone(getActivity(), getString(R.string.message),
+                    mIncomingBid.getMessage(), true, null));
         }
         ((TextView) view.findViewById(R.id.product_name)).setText(TextUtils.concat(mIncomingBid
                 .getBrand().getName(), " ", mIncomingBid.getType().getName()));
         ((TextView) view.findViewById(R.id.price)).setText(TextUtils.concat(String.valueOf(
                 mIncomingBid.getBid()), " ", getString(R.string.kr)));
 
-        final TextView attachedMessage = (TextView) view.findViewById(R.id.attached_message);
+        final TextView attachedMessage = view.findViewById(R.id.attached_message);
         if (mIncomingBid.getDeclineMessage() != null) {
             attachedMessage.setText(mIncomingBid.getDeclineMessage());
         }
@@ -142,16 +127,13 @@ public class IncomingBidDialog extends Fragment {
             }
         });
         final View attachArrow = view.findViewById(R.id.attach_message_arrow);
-        final SlidingLayer sl = (SlidingLayer) view.findViewById(R.id.sliding);
+        final SlidingLayer sl = view.findViewById(R.id.sliding);
         if (mIncomingBid.isDeclineMessageOpen()) {
             sl.openLayer(false);
         }
-        sl.setOnScrollListener(new SlidingLayer.OnScrollListener() {
-            @Override
-            public void onScroll(int absoluteScroll) {
-                float relativeScroll = (float) absoluteScroll / (float) sl.getHeight();
-                attachArrow.setRotation(270 + 180 * relativeScroll);
-            }
+        sl.setOnScrollListener(absoluteScroll -> {
+            float relativeScroll = (float) absoluteScroll / (float) sl.getHeight();
+            attachArrow.setRotation(270 + 180 * relativeScroll);
         });
         sl.setOnInteractListener(new SlidingLayer.OnInteractListener() {
             @Override
@@ -186,46 +168,37 @@ public class IncomingBidDialog extends Fragment {
             }
         });
 
-        view.findViewById(R.id.attach_message).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (sl.isOpened()) {
-                    sl.closeLayer(true);
-                } else if (sl.isClosed()) {
-                    sl.openLayer(true);
-                }
+        view.findViewById(R.id.attach_message).setOnClickListener(v -> {
+            if (sl.isOpened()) {
+                sl.closeLayer(true);
+            } else if (sl.isClosed()) {
+                sl.openLayer(true);
             }
         });
 
-        view.findViewById(R.id.decline).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mIncomingBid.hasExpired()) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                            R.string.bid_has_expired_decline, null);
-                    return;
-                }
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    ((BaseActivity) getActivity()).declineIncomingBid(mIncomingBid, mBidder);
-                }
+        view.findViewById(R.id.decline).setOnClickListener(v -> {
+            if (mIncomingBid.hasExpired()) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                        R.string.bid_has_expired_decline, null);
+                return;
+            }
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                ((BaseActivity) getActivity()).declineIncomingBid(mIncomingBid, mBidder);
             }
         });
 
-        mHammer = (HammerView) view.findViewById(R.id.hammer);
-        mHammer.setOnBidAcceptedListener(new HammerView.OnBidAcceptedListener() {
-            @Override
-            public void onBidAccepted() {
-                if (mIncomingBid.hasExpired()) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                            R.string.bid_has_expired_decline, null);
-                    mHammer.setDefault();
-                    return;
-                }
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    ((BaseActivity) getActivity()).acceptIncomingBid(mIncomingBid, mBidder);
-                } else {
-                    mHammer.setDefault();
-                }
+        mHammer = view.findViewById(R.id.hammer);
+        mHammer.setOnBidAcceptedListener(() -> {
+            if (mIncomingBid.hasExpired()) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                        R.string.bid_has_expired_decline, null);
+                mHammer.setDefault();
+                return;
+            }
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                ((BaseActivity) getActivity()).acceptIncomingBid(mIncomingBid, mBidder);
+            } else {
+                mHammer.setDefault();
             }
         });
 

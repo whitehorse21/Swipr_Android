@@ -57,19 +57,14 @@ public class AddPhotoDialog extends BaseDialog implements AddPhotoAdapter.OnPhot
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_sell_add_photo, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view12 -> getDialog().dismiss());
 
         if (mPhotos == null) {
             mPhotos = new ArrayList<>();
             mPhotos.add(new Photo());
         }
 
-        mRecycler = (RecyclerView) view.findViewById(R.id.recycler);
+        mRecycler = view.findViewById(R.id.recycler);
         mAdapter = new AddPhotoAdapter(getActivity(), mPhotos, this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -81,24 +76,21 @@ public class AddPhotoDialog extends BaseDialog implements AddPhotoAdapter.OnPhot
         mRecycler.setLayoutManager(gridLayoutManager);
         mRecycler.setAdapter(mAdapter);
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ArrayList<Photo> photos = new ArrayList<>();
-                for (Photo p : mPhotos) {
-                    if (p.getLocalPath() != null) {
-                        photos.add(p);
-                    }
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> {
+            ArrayList<Photo> photos = new ArrayList<>();
+            for (Photo p : mPhotos) {
+                if (p.getLocalPath() != null) {
+                    photos.add(p);
                 }
-                if (photos.size() == 0) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                            R.string.add_at_least_one_photo, null);
-                    return;
-                }
-                mPhotoSelectListener.onPhotoSelected(photos);
-
-                getDialog().dismiss();
             }
+            if (photos.size() == 0) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                        R.string.add_at_least_one_photo, null);
+                return;
+            }
+            mPhotoSelectListener.onPhotoSelected(photos);
+
+            getDialog().dismiss();
         });
 
         return view;

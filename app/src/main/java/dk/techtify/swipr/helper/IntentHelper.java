@@ -12,13 +12,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.provider.Telephony;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.onesignal.OneSignal;
 
 import java.io.File;
 import java.util.List;

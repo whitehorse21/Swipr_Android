@@ -8,10 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.wunderlist.slidinglayer.SlidingLayer;
 
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.adapter.store.BidOverviewSliderAdapter;
@@ -64,20 +61,12 @@ public class BidOverviewDialog extends BaseDialog {
         }
         View view = inflater.inflate(R.layout.dialog_bid_overview, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCancelBid = true;
-                getDialog().dismiss();
-            }
+        view.findViewById(R.id.close).setOnClickListener(view12 -> {
+            mCancelBid = true;
+            getDialog().dismiss();
         });
 
-        view.findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.back).setOnClickListener(view1 -> getDialog().dismiss());
 
         ((TextView) view.findViewById(R.id.price)).setText(TextUtils.concat(String.valueOf(mBid
                 .getPrice()), " ", getString(R.string.kr)));
@@ -104,7 +93,7 @@ public class BidOverviewDialog extends BaseDialog {
         int sliderWidth = (DisplayHelper.getScreenResolution(getActivity())[0] - DisplayHelper
                 .dpToPx(getActivity(), 48)) / 2;
 
-        final ViewPager slidePager = (ViewPager) view.findViewById(R.id.pager);
+        final ViewPager slidePager = view.findViewById(R.id.pager);
         slidePager.setPageMargin(-sliderWidth);
         slidePager.setAdapter(new BidOverviewSliderAdapter(getChildFragmentManager()));
         slidePager.setCurrentItem(1, false);

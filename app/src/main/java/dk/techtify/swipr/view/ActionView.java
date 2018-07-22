@@ -3,7 +3,6 @@ package dk.techtify.swipr.view;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -44,20 +43,17 @@ public class ActionView extends FrameLayout {
     public void onFinishInflate() {
         super.onFinishInflate();
 
-        mTitle = (TextView) findViewById(R.id.title);
+        mTitle = findViewById(R.id.title);
 
-        mActionButton = (ImageButton) findViewById(R.id.menu_action_view);
+        mActionButton = findViewById(R.id.menu_action_view);
 
-        mPhoto = (ImageView) findViewById(R.id.menu_photo);
+        mPhoto = findViewById(R.id.menu_photo);
 
-        mMenuButton = (ImageButton) findViewById(R.id.menu);
+        mMenuButton = findViewById(R.id.menu);
 
-        mMenuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMenuClickListener != null) {
-                    mMenuClickListener.onMenuClick();
-                }
+        mMenuButton.setOnClickListener(view -> {
+            if (mMenuClickListener != null) {
+                mMenuClickListener.onMenuClick();
             }
         });
     }
@@ -73,12 +69,7 @@ public class ActionView extends FrameLayout {
     public void setActionButton(@DrawableRes int id, final ActionClickListener clickListener) {
         mActionButton.setVisibility(VISIBLE);
         mActionButton.setImageResource(id);
-        mActionButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickListener.onActionButtonClick();
-            }
-        });
+        mActionButton.setOnClickListener(view -> clickListener.onActionButtonClick());
     }
 
     public void setMenuButton(@DrawableRes int id) {

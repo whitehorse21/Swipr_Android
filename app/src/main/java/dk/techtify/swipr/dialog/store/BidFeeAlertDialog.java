@@ -30,12 +30,7 @@ public class BidFeeAlertDialog extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_bid_fee_alert, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view12 -> getDialog().dismiss());
 
         SpannableString ss = new SpannableString("");
         ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.colorPrimary)), 0,
@@ -44,12 +39,9 @@ public class BidFeeAlertDialog extends BaseDialog {
         ((TextView) view.findViewById(R.id.text)).setText(TextUtils.concat(getString(
                 R.string.you_will_be_charged), " ", ss, " ", getString(R.string.in_transaction_fee)));
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mNextListener.onClick(view);
-                getDialog().dismiss();
-            }
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> {
+            mNextListener.onClick(view1);
+            getDialog().dismiss();
         });
 
         return view;

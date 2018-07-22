@@ -27,12 +27,12 @@ public class Faq extends RealmObject {
         this.id = id;
 
         HashMap<String, Object> questionMap = map.containsKey("question") ?
-                (HashMap<String, Object>) map.get("question") : new HashMap<String, Object>();
+                (HashMap<String, Object>) map.get("question") : new HashMap<>();
         this.dkQuestion = questionMap.containsKey("dk") ? questionMap.get("dk").toString() : "";
         this.enQuestion = questionMap.containsKey("en") ? questionMap.get("en").toString() : "";
 
         HashMap<String, Object> answerMap = map.containsKey("answer") ?
-                (HashMap<String, Object>) map.get("answer") : new HashMap<String, Object>();
+                (HashMap<String, Object>) map.get("answer") : new HashMap<>();
         this.dkAnswer = answerMap.containsKey("dk") ? answerMap.get("dk").toString() : "";
         this.enAnswer = answerMap.containsKey("en") ? answerMap.get("en").toString() : "";
     }

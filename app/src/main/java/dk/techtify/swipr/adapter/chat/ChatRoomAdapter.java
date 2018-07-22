@@ -12,8 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.wunderlist.slidinglayer.SlidingLayer;
 
@@ -191,28 +189,25 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public MessageHolder(View itemView) {
             super(itemView);
-            root = (FrameLayout) itemView.findViewById(R.id.root);
-            swipeable = (SlidingLayer) itemView.findViewById(R.id.swipeable);
+            root = itemView.findViewById(R.id.root);
+            swipeable = itemView.findViewById(R.id.swipeable);
             alphable = itemView.findViewById(R.id.alphable);
-            photo = (ImageView) itemView.findViewById(R.id.photo);
+            photo = itemView.findViewById(R.id.photo);
             delete = itemView.findViewById(R.id.delete);
-            name = (TextView) itemView.findViewById(R.id.name);
-            time = (TextView) itemView.findViewById(R.id.time);
-            text = (TextView) itemView.findViewById(R.id.text);
+            name = itemView.findViewById(R.id.name);
+            time = itemView.findViewById(R.id.time);
+            text = itemView.findViewById(R.id.text);
 
             width = DisplayHelper.getScreenResolution(mContext)[0];
             offset = width - DisplayHelper.dpToPx(mContext, 96);
 
             swipeable.openLayer(false);
             swipeable.setOffsetDistance(offset);
-            swipeable.setOnScrollListener(new SlidingLayer.OnScrollListener() {
-                @Override
-                public void onScroll(final int absoluteScroll) {
-                    mParentSwipeListener.onParentSwipeEnable(!(absoluteScroll < width));
+            swipeable.setOnScrollListener(absoluteScroll -> {
+                mParentSwipeListener.onParentSwipeEnable(!(absoluteScroll < width));
 
-                    float relativeScroll = (float) absoluteScroll / (float) width;
-                    alphable.setAlpha(relativeScroll);
-                }
+                float relativeScroll = (float) absoluteScroll / (float) width;
+                alphable.setAlpha(relativeScroll);
             });
 
             alphable.setOnClickListener(this);

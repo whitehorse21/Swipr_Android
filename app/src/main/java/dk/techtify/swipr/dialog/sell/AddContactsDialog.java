@@ -1,28 +1,20 @@
 package dk.techtify.swipr.dialog.sell;
 
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.List;
-
-import dk.techtify.swipr.AppConfig;
 import dk.techtify.swipr.R;
 import dk.techtify.swipr.asynctask.ApiResponseListener;
 import dk.techtify.swipr.asynctask.GetCoordinatesOfAddressAsyncTask;
 import dk.techtify.swipr.dialog.BaseDialog;
 import dk.techtify.swipr.helper.DialogHelper;
 import dk.techtify.swipr.helper.NetworkHelper;
-import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.model.sell.ContactInfo;
+import dk.techtify.swipr.model.user.User;
 
 /**
  * Created by Pavel on 1/4/2017.
@@ -45,17 +37,12 @@ public class AddContactsDialog extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_sell_add_contacts, null);
 
-        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.close).setOnClickListener(view12 -> getDialog().dismiss());
 
-        final EditText street = (EditText) view.findViewById(R.id.street);
-        final EditText postCode = (EditText) view.findViewById(R.id.post_code);
-        final EditText city = (EditText) view.findViewById(R.id.city);
-        final EditText mobile = (EditText) view.findViewById(R.id.mobile);
+        final EditText street = view.findViewById(R.id.street);
+        final EditText postCode = view.findViewById(R.id.post_code);
+        final EditText city = view.findViewById(R.id.city);
+        final EditText mobile = view.findViewById(R.id.mobile);
 
         ContactInfo ci = User.getLocalUser().getContactInfo();
         if (ci != null) {
@@ -72,44 +59,35 @@ public class AddContactsDialog extends BaseDialog {
             mobile.setText(mContactInfo.getMobile());
         }
 
-        street.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    postCode.requestFocus();
-                    return true;
-                }
-                return false;
+        street.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                postCode.requestFocus();
+                return true;
             }
+            return false;
         });
 
-        postCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    city.requestFocus();
-                    return true;
-                }
-                return false;
+        postCode.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                city.requestFocus();
+                return true;
             }
+            return false;
         });
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (street.getText().toString().trim().length() < 1
-                        || postCode.getText().toString().trim().length() < 1
-                        || city.getText().toString().trim().length() < 1
-                        || mobile.getText().toString().trim().length() < 1) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                            R.string.fill_all_fields, null);
-                    return;
-                }
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    getCoordinates(street.getText().toString().trim(), city.getText().toString().trim(),
-                            postCode.getText().toString().trim(),
-                            mobile.getText().toString().trim());
-                }
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> {
+            if (street.getText().toString().trim().length() < 1
+                    || postCode.getText().toString().trim().length() < 1
+                    || city.getText().toString().trim().length() < 1
+                    || mobile.getText().toString().trim().length() < 1) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                        R.string.fill_all_fields, null);
+                return;
+            }
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                getCoordinates(street.getText().toString().trim(), city.getText().toString().trim(),
+                        postCode.getText().toString().trim(),
+                        mobile.getText().toString().trim());
             }
         });
 

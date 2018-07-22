@@ -3,7 +3,6 @@ package dk.techtify.swipr.fragment.store;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArraySet;
 import android.text.TextUtils;
@@ -14,8 +13,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -113,76 +110,70 @@ public class StoreItemFragment extends Fragment {
                 .getPrice()), " ", getResources().getString(R.string.kr)));
         ((TextView) view.findViewById(R.id.location)).setText(mProduct.getContactInfo().getCity());
 
-        final CheckBox like = (CheckBox) view.findViewById(R.id.like);
+        final CheckBox like = view.findViewById(R.id.like);
         like.setChecked(mProduct.isAddedToFavorites());
-        like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!User.checkSignIn(getActivity())) {
-                    like.setChecked(false);
-                    return;
-                }
-                if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
-                    if (like.isChecked()) {
-                        new AddToFavoritesAsyncTask(mProduct.getId(), new ApiResponseListener() {
-                            @Override
-                            public void onSuccess(Object object) {
-                            }
+        like.setOnClickListener(v -> {
+            if (!User.checkSignIn(getActivity())) {
+                like.setChecked(false);
+                return;
+            }
+            if (NetworkHelper.isOnline(getActivity(), NetworkHelper.ALERT)) {
+                if (like.isChecked()) {
+                    new AddToFavoritesAsyncTask(mProduct.getId(), new ApiResponseListener() {
+                        @Override
+                        public void onSuccess(Object object) {
+                        }
 
-                            @Override
-                            public void onError(Object object) {
-                                if (StoreItemFragment.this.isAdded()) {
-                                    Integer code = (Integer) object;
-                                    if (code == 400) {
-                                        return;
-                                    } else if (code == 223) {
-                                        SwiprPlusDialog spd = new SwiprPlusDialog();
-                                        spd.setDealListener((MainActivity) getActivity());
-                                        spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
-                                        return;
-                                    }
-
-                                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                                            R.string.error_unknown, null);
+                        @Override
+                        public void onError(Object object) {
+                            if (StoreItemFragment.this.isAdded()) {
+                                Integer code = (Integer) object;
+                                if (code == 400) {
+                                    return;
+                                } else if (code == 223) {
+                                    SwiprPlusDialog spd = new SwiprPlusDialog();
+                                    spd.setDealListener((MainActivity) getActivity());
+                                    spd.show(getActivity().getSupportFragmentManager(), spd.getClass().getSimpleName());
+                                    return;
                                 }
-                            }
-                        }).execute();
-                    } else {
-                        new DeleteFromFavoritesAsyncTask(mProduct.getId(), new ApiResponseListener() {
-                            @Override
-                            public void onSuccess(Object object) {
-                            }
 
-                            @Override
-                            public void onError(Object object) {
-                                if (StoreItemFragment.this.isAdded()) {
-                                    like.setChecked(!like.isChecked());
-                                }
+                                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                                        R.string.error_unknown, null);
                             }
-                        }).execute();
-                    }
+                        }
+                    }).execute();
+                } else {
+                    new DeleteFromFavoritesAsyncTask(mProduct.getId(), new ApiResponseListener() {
+                        @Override
+                        public void onSuccess(Object object) {
+                        }
+
+                        @Override
+                        public void onError(Object object) {
+                            if (StoreItemFragment.this.isAdded()) {
+                                like.setChecked(!like.isChecked());
+                            }
+                        }
+                    }).execute();
                 }
             }
         });
 
-        view.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (User.checkSignIn(getActivity())) {
-                    if (mSeller != null) {
-                        Intent intent = new Intent(getActivity(), ChatActivity.class);
-                        intent.putExtra(ChatActivity.EXTRA_CONTENT, new MessageContent(MessageContent
-                                .TYPE_PRODUCT_MESSAGE, new MessageContentDataProduct(mProduct.getId(),
-                                mProduct.getUserId(), mProduct.getPhotos().get(0))));
-                        intent.putExtra(ChatActivity.EXTRA_RECIPIENT, new Recipient(mSeller));
-                        getActivity().startActivity(intent);
-                        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    }
+        view.findViewById(R.id.send).setOnClickListener(view1 -> {
+            if (User.checkSignIn(getActivity())) {
+                if (mSeller != null) {
+                    Intent intent = new Intent(getActivity(), ChatActivity.class);
+                    intent.putExtra(ChatActivity.EXTRA_CONTENT, new MessageContent(MessageContent
+                            .TYPE_PRODUCT_MESSAGE, new MessageContentDataProduct(mProduct.getId(),
+                            mProduct.getUserId(), mProduct.getPhotos().get(0))));
+                    intent.putExtra(ChatActivity.EXTRA_RECIPIENT, new Recipient(mSeller));
+                    getActivity().startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             }
         });
 
-        ImageView photoView = (ImageView) view.findViewById(R.id.photo);
+        ImageView photoView = view.findViewById(R.id.photo);
         if (mProduct.getPhotos() != null && mProduct.getPhotos().size() > 0 && !TextUtils.isEmpty(mProduct.getPhotos().get(0))) {
             GlideApp.with(getActivity())
                     .load(FirebaseStorage.getInstance().getReferenceFromUrl(mProduct.getPhotos().get(0)))
@@ -192,19 +183,17 @@ public class StoreItemFragment extends Fragment {
         photoView.setOnClickListener(openImagesListener);
         view.findViewById(R.id.text_layout).setOnClickListener(openImagesListener);
 
-        view.findViewById(R.id.bid).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (BaseActivity.getOutgoingBids().contains(mProduct.getId())) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                            R.string.you_have_active_bid, null);
-                    return;
-                }
-                if (BaseActivity.getBoughtItems().contains(mProduct.getId())) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                            R.string.you_have_accepted_bid, null);
-                    return;
-                }
+        view.findViewById(R.id.bid).setOnClickListener(v -> {
+            if (BaseActivity.getOutgoingBids().contains(mProduct.getId())) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                        R.string.you_have_active_bid, null);
+                return;
+            }
+            if (BaseActivity.getBoughtItems().contains(mProduct.getId())) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                        R.string.you_have_accepted_bid, null);
+                return;
+            }
 //                if (!SwiprApp.getInstance().getSp().contains(Constants.Prefs.IS_BID_FEE_ALERT_SHOWN)) {
 //                    BidFeeAlertDialog bidFeeAlertDialog = new BidFeeAlertDialog();
 //                    bidFeeAlertDialog.setNextListener(new View.OnClickListener() {
@@ -219,9 +208,8 @@ public class StoreItemFragment extends Fragment {
 //                    SwiprApp.getInstance().getSp().edit().putBoolean(Constants.Prefs
 //                            .IS_BID_FEE_ALERT_SHOWN, true).apply();
 //                } else if (mProduct != null && mSeller != null) {
-                placeBid(true, false);
+            placeBid(true, false);
 //                }
-            }
         });
 
         return view;
@@ -317,21 +305,18 @@ public class StoreItemFragment extends Fragment {
         childUpdates.put("bid-outgoing/" + User.getLocalUser().getId() + "/" + key, bidMap);
         childUpdates.put("bid-incoming/" + mProduct.getUserId() + "/" + key, bidMap);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (StoreItemFragment.this.isAdded()) {
-                    if (!task.isSuccessful()) {
-                        DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning, task
-                                .getException() != null && task.getException().getMessage() != null ?
-                                task.getException().getMessage() : getString(R.string.error_unknown), null);
-                    }
-
-                    Counters.getInstance().increaseOutgoingBidsCount();
-
-                    // todo payment gateway
-                    changeStatusAfterSuccessfulPayment(key);
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (StoreItemFragment.this.isAdded()) {
+                if (!task.isSuccessful()) {
+                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning, task
+                            .getException() != null && task.getException().getMessage() != null ?
+                            task.getException().getMessage() : getString(R.string.error_unknown), null);
                 }
+
+                Counters.getInstance().increaseOutgoingBidsCount();
+
+                // todo payment gateway
+                changeStatusAfterSuccessfulPayment(key);
             }
         });
     }
@@ -341,22 +326,19 @@ public class StoreItemFragment extends Fragment {
         childUpdates.put("bid-outgoing/" + User.getLocalUser().getId() + "/" + key + "/status", 1);
         childUpdates.put("bid-incoming/" + mProduct.getUserId() + "/" + key + "/status", 1);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning, task
-                            .getException() != null && task.getException().getMessage() != null ?
-                            task.getException().getMessage() : getString(R.string.error_unknown), null);
-                }
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning, task
+                        .getException() != null && task.getException().getMessage() != null ?
+                        task.getException().getMessage() : getString(R.string.error_unknown), null);
+            }
 
-                FirebaseHelper.sendNewBidMessage(getString(R.string.new_bid).toUpperCase(), mProduct.getId(), mSeller);
+            FirebaseHelper.sendNewBidMessage(getString(R.string.new_bid).toUpperCase(), mProduct.getId(), mSeller);
 
-                if (SwiprApp.getInstance().getSp().getBoolean(Constants.Prefs.SHOW_BID_SUCCESSFUL_ALERT, true)) {
-                    BidSuccessfulDialog bidSuccessfulDialog = new BidSuccessfulDialog();
-                    bidSuccessfulDialog.show(getActivity().getSupportFragmentManager(),
-                            bidSuccessfulDialog.getClass().getSimpleName());
-                }
+            if (SwiprApp.getInstance().getSp().getBoolean(Constants.Prefs.SHOW_BID_SUCCESSFUL_ALERT, true)) {
+                BidSuccessfulDialog bidSuccessfulDialog = new BidSuccessfulDialog();
+                bidSuccessfulDialog.show(getActivity().getSupportFragmentManager(),
+                        bidSuccessfulDialog.getClass().getSimpleName());
             }
         });
     }
@@ -376,7 +358,7 @@ public class StoreItemFragment extends Fragment {
 
     public static void increaseViewCounter(final Product product, boolean toSecondServer) {
         final String key = DateTimeHelper.getFormattedDate(System.currentTimeMillis(), "yyyyMMdd");
-        final Set<String> set = SwiprApp.getInstance().getSp().getStringSet("views" + key, new ArraySet<String>());
+        final Set<String> set = SwiprApp.getInstance().getSp().getStringSet("views" + key, new ArraySet<>());
         if (!set.contains(product.getId())) {
             if (toSecondServer) {
                 new ProductSeenAsyncTask(User.getLocalUser().getId(), product.getId())

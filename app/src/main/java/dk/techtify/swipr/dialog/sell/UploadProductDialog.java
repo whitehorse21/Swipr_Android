@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,9 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -45,9 +40,9 @@ import dk.techtify.swipr.R;
 import dk.techtify.swipr.dialog.BaseDialog;
 import dk.techtify.swipr.helper.BitmapHelper;
 import dk.techtify.swipr.helper.DialogHelper;
-import dk.techtify.swipr.model.user.User;
 import dk.techtify.swipr.model.sell.Photo;
 import dk.techtify.swipr.model.sell.Product;
+import dk.techtify.swipr.model.user.User;
 
 /**
  * Created by Pavel on 1/10/2017.
@@ -84,8 +79,8 @@ public class UploadProductDialog extends BaseDialog {
         setCancelable(false);
         View view = inflater.inflate(R.layout.dialog_upload_product, null);
 
-        mText = (TextView) view.findViewById(R.id.content);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progress);
+        mText = view.findViewById(R.id.content);
+        mProgressBar = view.findViewById(R.id.progress);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mKey = mDatabase.child("product").push().getKey();
@@ -139,31 +134,22 @@ public class UploadProductDialog extends BaseDialog {
 //                        final long size = mFiles.get(mNumber).length();
 
                         UploadTask uploadTask = mFileReferences.get(mNumber).putBytes(data);
-                        uploadTask.addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                getDialog().dismiss();
-                                DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                                        exception.getMessage(), null);
-                            }
-                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                final double prg = (100.0 * taskSnapshot.getBytesTransferred()) / data.length;
+                        uploadTask.addOnFailureListener(exception -> {
+                            getDialog().dismiss();
+                            DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                                    exception.getMessage(), null);
+                        }).addOnProgressListener(taskSnapshot -> {
+                            final double prg = (100.0 * taskSnapshot.getBytesTransferred()) / data.length;
 
-                                mProgressBar.setProgress((int) prg);
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Task<Uri> downloadUrl = mFileReferences.get(mNumber).getDownloadUrl();
-                                mServerPaths.add(downloadUrl.getResult().toString().split("\\?")[0]);
-                                mNumber += 1;
-                                if (mNumber > mFiles.size() - 1) {
-                                    increaseCounter();
-                                } else {
-                                    uploadPhoto();
-                                }
+                            mProgressBar.setProgress((int) prg);
+                        }).addOnSuccessListener(taskSnapshot -> {
+                            Task<Uri> downloadUrl = mFileReferences.get(mNumber).getDownloadUrl();
+                            mServerPaths.add(downloadUrl.getResult().toString().split("\\?")[0]);
+                            mNumber += 1;
+                            if (mNumber > mFiles.size() - 1) {
+                                increaseCounter();
+                            } else {
+                                uploadPhoto();
                             }
                         });
                     }
@@ -188,12 +174,7 @@ public class UploadProductDialog extends BaseDialog {
                         }
 
                         mDatabase.child("counter").child(User.getLocalUser().getId()).child("active-posts")
-                                .setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                uploadData();
-                            }
-                        });
+                                .setValue(value).addOnCompleteListener(task -> uploadData());
                     }
 
                     @Override
@@ -213,25 +194,22 @@ public class UploadProductDialog extends BaseDialog {
         childUpdates.put("/user-product/" + FirebaseAuth.getInstance().getCurrentUser()
                 .getUid() + "/" + mKey, productMap);
 
-        mDatabase.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (UploadProductDialog.this.isAdded()) {
-                    User.updateContactInfo(mProduct.getContactInfo());
-                    mDatabase.child("user-data").child(User.getLocalUser().getId()).child("contactInfo")
-                            .setValue(mProduct.getContactInfo().toMap());
+        mDatabase.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            if (UploadProductDialog.this.isAdded()) {
+                User.updateContactInfo(mProduct.getContactInfo());
+                mDatabase.child("user-data").child(User.getLocalUser().getId()).child("contactInfo")
+                        .setValue(mProduct.getContactInfo().toMap());
 
-                    if (!task.isSuccessful()) {
-                        getDialog().dismiss();
-                        DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
-                                task.getException() != null && task.getException()
-                                        .getMessage() != null ? task.getException().getMessage() :
-                                        getString(R.string.error_unknown), null);
-                        return;
-                    }
-
-                    uploadToApi();
+                if (!task.isSuccessful()) {
+                    getDialog().dismiss();
+                    DialogHelper.showDialogWithCloseAndDone(getActivity(), R.string.warning,
+                            task.getException() != null && task.getException()
+                                    .getMessage() != null ? task.getException().getMessage() :
+                                    getString(R.string.error_unknown), null);
+                    return;
                 }
+
+                uploadToApi();
             }
         });
     }

@@ -33,39 +33,25 @@ public class SellPreviewDialog extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_sell_preview, null);
 
-        final ProductPreview productPreview = (ProductPreview) view.findViewById(R.id.preview);
+        final ProductPreview productPreview = view.findViewById(R.id.preview);
 //        productPreview.setProduct(mProduct);
 
-        view.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                mActionListener.onEditClick();
-            }
+        view.findViewById(R.id.edit).setOnClickListener(v -> {
+            getDialog().dismiss();
+            mActionListener.onEditClick();
         });
 
-        view.findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                mActionListener.onShareClick(productPreview);
-            }
+        view.findViewById(R.id.share).setOnClickListener(v -> {
+            getDialog().dismiss();
+            mActionListener.onShareClick(productPreview);
         });
 
-        view.findViewById(R.id.remove).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-                mActionListener.onRemoveClick();
-            }
+        view.findViewById(R.id.remove).setOnClickListener(v -> {
+            getDialog().dismiss();
+            mActionListener.onRemoveClick();
         });
 
-        view.findViewById(R.id.positive).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-            }
-        });
+        view.findViewById(R.id.positive).setOnClickListener(view1 -> getDialog().dismiss());
 
         return view;
     }

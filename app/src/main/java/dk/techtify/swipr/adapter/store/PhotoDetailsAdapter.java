@@ -10,8 +10,6 @@ import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -83,8 +81,8 @@ public class PhotoDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         ProductTypeHolder(View itemView) {
             super(itemView);
-            root = (FrameLayout) itemView.findViewById(R.id.root);
-            photo = (ImageView) itemView.findViewById(R.id.photo);
+            root = itemView.findViewById(R.id.root);
+            photo = itemView.findViewById(R.id.photo);
             photo.setOnClickListener(this);
         }
 

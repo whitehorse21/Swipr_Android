@@ -86,8 +86,8 @@ public class ProductTypeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public ProductTypeHolder(View itemView) {
             super(itemView);
-            root = (FrameLayout) itemView.findViewById(R.id.root);
-            name = (TextView) itemView.findViewById(R.id.name);
+            root = itemView.findViewById(R.id.root);
+            name = itemView.findViewById(R.id.name);
             name.setOnClickListener(this);
         }
 

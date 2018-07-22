@@ -6,9 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.View;
 import android.widget.TextView;
 
 import dk.techtify.swipr.R;
@@ -25,19 +23,9 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        findViewById(R.id.back).setOnClickListener(view -> onBackPressed());
 
-        findViewById(R.id.click).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                IntentHelper.sendEmailViaGmail(SettingsActivity.this, getString(R.string.owner_email), "");
-            }
-        });
+        findViewById(R.id.click).setOnClickListener(view -> IntentHelper.sendEmailViaGmail(SettingsActivity.this, getString(R.string.owner_email), ""));
 
         SpannableString ss = new SpannableString("#KeepThingsSimple");
         ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.colorPrimary)), 0,

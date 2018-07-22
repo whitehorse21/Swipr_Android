@@ -68,12 +68,7 @@ public class NetworkHelper {
             } else if (mode == SNACK_BAR && snackBarRoot != null) {
                 Snackbar snackbar = Snackbar
                         .make(snackBarRoot, context.getString(R.string.error_internet_connection), Snackbar.LENGTH_LONG)
-                        .setAction(context.getString(R.string.go_to_settings), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                IntentHelper.openWifiSettings((Activity) context);
-                            }
-                        });
+                        .setAction(context.getString(R.string.go_to_settings), view -> IntentHelper.openWifiSettings((Activity) context));
 
                 snackbar.show();
             }

@@ -48,103 +48,7 @@ public class AddPhotoActivity extends AppCompatActivity implements NewAddPhotoAd
         this.mJustCapturedPhotoFile = mJustCapturedPhotoFile;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_photo);
-
-        mActionView = (ActionView) findViewById(R.id.action_view);
-        mActionView.findViewById(R.id.menu).setVisibility(View.INVISIBLE);
-        mActionView.setTitle(getString(R.string.take_photos));
-        mActionView.setActionButton(R.drawable.ic_close, new ActionView.ActionClickListener() {
-            @Override
-            public void onActionButtonClick() {
-                onBackPressed();
-            }
-        });
-        mActionView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
-        if (mPhotos == null) {
-            mPhotos = new ArrayList<>();
-        }
-
-        mRecycler = (RecyclerView) findViewById(R.id.recycler);
-        mAdapter = new NewAddPhotoAdapter(this, mPhotos, this);
-        mRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mRecycler.setAdapter(mAdapter);
-
-        mGallery = findViewById(R.id.gallery);
-        mGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PhotoHelper.checkGalleryPermission(AddPhotoActivity.this);
-            }
-        });
-
-        mCamera = findViewById(R.id.camera);
-        mCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PhotoHelper.checkCameraAvailability(AddPhotoActivity.this);
-            }
-        });
-
-        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mMainPhoto == null || mMainPhoto.getLocalPath() == null) {
-                    DialogHelper.showDialogWithCloseAndDone(AddPhotoActivity.this, R.string.warning,
-                            R.string.add_at_least_one_photo, null);
-                    return;
-                }
-                mMainPhoto.setBitmap(null);
-                ArrayList<Photo> photos = new ArrayList<>();
-                photos.add(mMainPhoto);
-                for (Photo p : mPhotos) {
-                    if (p.getLocalPath() != null) {
-                        p.setBitmap(null);
-                        photos.add(p);
-                    }
-                }
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_PHOTO_LIST, photos);
-                setResult(RESULT_OK, intent);
-                finish();
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-
-        mMainPhotoView = (ImageView) findViewById(R.id.main_photo);
-        mMainPhotoRemove = (ImageButton) findViewById(R.id.main_remove);
-        mMainPhotoRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.showDialogWithCloseAndDone(AddPhotoActivity.this, R.string.warning,
-                        R.string.remove_photo, new DialogHelper.OnActionListener() {
-                            @Override
-                            public void onPositive(Object o) {
-                                setMainPhoto(null);
-                            }
-                        });
-            }
-        });
-
-        if (getIntent().hasExtra(EXTRA_PHOTO_LIST_INCOME)) {
-            ArrayList<Photo> localPhotos = (ArrayList<Photo>) getIntent().getSerializableExtra(EXTRA_PHOTO_LIST_INCOME);
-            for (int i = 0; i < localPhotos.size(); i++) {
-                Photo photo = localPhotos.get(i);
-                if (i == 0) {
-                    setMainPhoto(photo);
-                } else {
-                    mPhotos.add(photo);
-                    if (photo.getBitmap() == null) {
-                        getThumbnail(photo.getLocalPath(), false);
-                    }
-                }
-            }
-            setMaxVisibility(mPhotos.size() >= AppConfig.SELL_MAX_ATTACHED_PHOTO_COUNT - 1);
-        }
-    }
+    PhotoHelper.ExecuteListener mGetPhotoExecuteListener = this::attachPhoto;
 
     @Override
     public void onBackPressed() {
@@ -172,12 +76,80 @@ public class AddPhotoActivity extends AppCompatActivity implements NewAddPhotoAd
         }
     }
 
-    PhotoHelper.ExecuteListener mGetPhotoExecuteListener = new PhotoHelper.ExecuteListener() {
-        @Override
-        public void onPostExecute(String path, boolean fromGallery) {
-            attachPhoto(path, fromGallery);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_photo);
+
+        mActionView = findViewById(R.id.action_view);
+        mActionView.findViewById(R.id.menu).setVisibility(View.INVISIBLE);
+        mActionView.setTitle(getString(R.string.take_photos));
+        mActionView.setActionButton(R.drawable.ic_close, this::onBackPressed);
+        mActionView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+        if (mPhotos == null) {
+            mPhotos = new ArrayList<>();
         }
-    };
+
+        mRecycler = findViewById(R.id.recycler);
+        mAdapter = new NewAddPhotoAdapter(this, mPhotos, this);
+        mRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mRecycler.setAdapter(mAdapter);
+
+        mGallery = findViewById(R.id.gallery);
+        mGallery.setOnClickListener(v -> PhotoHelper.checkGalleryPermission(AddPhotoActivity.this));
+
+        mCamera = findViewById(R.id.camera);
+        mCamera.setOnClickListener(v -> PhotoHelper.checkCameraAvailability(AddPhotoActivity.this));
+
+        findViewById(R.id.next).setOnClickListener(v -> {
+            if (mMainPhoto == null || mMainPhoto.getLocalPath() == null) {
+                DialogHelper.showDialogWithCloseAndDone(AddPhotoActivity.this, R.string.warning,
+                        R.string.add_at_least_one_photo, null);
+                return;
+            }
+            mMainPhoto.setBitmap(null);
+            ArrayList<Photo> photos = new ArrayList<>();
+            photos.add(mMainPhoto);
+            for (Photo p : mPhotos) {
+                if (p.getLocalPath() != null) {
+                    p.setBitmap(null);
+                    photos.add(p);
+                }
+            }
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_PHOTO_LIST, photos);
+            setResult(RESULT_OK, intent);
+            finish();
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        });
+
+        mMainPhotoView = findViewById(R.id.main_photo);
+        mMainPhotoRemove = findViewById(R.id.main_remove);
+        mMainPhotoRemove.setOnClickListener(v -> DialogHelper.showDialogWithCloseAndDone(AddPhotoActivity.this, R.string.warning,
+                R.string.remove_photo, new DialogHelper.OnActionListener() {
+                    @Override
+                    public void onPositive(Object o) {
+                        setMainPhoto(null);
+                    }
+                }));
+
+        if (getIntent().hasExtra(EXTRA_PHOTO_LIST_INCOME)) {
+            ArrayList<Photo> localPhotos = (ArrayList<Photo>) getIntent().getSerializableExtra(EXTRA_PHOTO_LIST_INCOME);
+            for (int i = 0; i < localPhotos.size(); i++) {
+                Photo photo = localPhotos.get(i);
+                if (i == 0) {
+                    setMainPhoto(photo);
+                } else {
+                    mPhotos.add(photo);
+                    if (photo.getBitmap() == null) {
+                        getThumbnail(photo.getLocalPath(), false);
+                    }
+                }
+            }
+            setMaxVisibility(mPhotos.size() >= AppConfig.SELL_MAX_ATTACHED_PHOTO_COUNT - 1);
+        }
+    }
 
     public void attachPhoto(String path, boolean fromGallery) {
         if (mMainPhoto == null) {

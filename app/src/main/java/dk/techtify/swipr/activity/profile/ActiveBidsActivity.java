@@ -7,8 +7,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.Observable;
@@ -39,17 +37,12 @@ public class ActiveBidsActivity extends BaseActivity implements Observer {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_bids);
 
-        mActionView = (ActionView) findViewById(R.id.action_view);
+        mActionView = findViewById(R.id.action_view);
         mActionView.setMenuButton(R.drawable.ic_arrow_back);
         mActionView.setTitle(User.getLocalUser().getName());
         mActionView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mActionView.getActionButton().setVisibility(View.INVISIBLE);
-        mActionView.setMenuClickListener(new ActionView.MenuClickListener() {
-            @Override
-            public void onMenuClick() {
-                onBackPressed();
-            }
-        });
+        mActionView.setMenuClickListener(this::onBackPressed);
 
         if (!TextUtils.isEmpty(User.getLocalUser().getPhotoUrl())) {
             mActionView.getPhotoView().setVisibility(View.VISIBLE);
@@ -59,27 +52,17 @@ public class ActiveBidsActivity extends BaseActivity implements Observer {
         }
 
         mSent = findViewById(R.id.radio_sent);
-        mSent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCurrentPage(0);
-            }
-        });
+        mSent.setOnClickListener(v -> setCurrentPage(0));
         mReceived = findViewById(R.id.radio_received);
-        mReceived.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCurrentPage(1);
-            }
-        });
-        mSentTitle = (TextView) findViewById(R.id.title_sent);
-        mReceivedTitle = (TextView) findViewById(R.id.title_received);
-        mSentCounter = (TextView) findViewById(R.id.count_sent);
-        mReceivedCounter = (TextView) findViewById(R.id.count_received);
+        mReceived.setOnClickListener(v -> setCurrentPage(1));
+        mSentTitle = findViewById(R.id.title_sent);
+        mReceivedTitle = findViewById(R.id.title_received);
+        mSentCounter = findViewById(R.id.count_sent);
+        mReceivedCounter = findViewById(R.id.count_received);
 
-        mCounter = (TextView) findViewById(R.id.count);
+        mCounter = findViewById(R.id.count);
 
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = findViewById(R.id.pager);
         mPager.setAdapter(new ActiveBidsPagerAdapter(getSupportFragmentManager()));
 
         Counters.getInstance().addObserver(this);

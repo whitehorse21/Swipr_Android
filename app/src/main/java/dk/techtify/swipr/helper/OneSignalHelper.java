@@ -31,15 +31,12 @@ public class OneSignalHelper {
 
     public static void subscribe() {
         OneSignal.setSubscription(true);
-        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
-            @Override
-            public void idsAvailable(String userId, String registrationId) {
-                if (AppConfig.DEBUG) {
-                    Log.d("ONE SIGNAL", "id is " + userId);
-                }
-                FirebaseDatabase.getInstance().getReference("user-data/" + User.getLocalUser().getId() +
-                        "/push-tokens/" + userId).setValue(1);
+        OneSignal.idsAvailable((userId, registrationId) -> {
+            if (AppConfig.DEBUG) {
+                Log.d("ONE SIGNAL", "id is " + userId);
             }
+            FirebaseDatabase.getInstance().getReference("user-data/" + User.getLocalUser().getId() +
+                    "/push-tokens/" + userId).setValue(1);
         });
     }
 
@@ -62,9 +59,8 @@ public class OneSignalHelper {
 
                 List<String> tokens = new ArrayList<>();
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                Iterator it = map.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
+                for (Object o : map.entrySet()) {
+                    Map.Entry pair = (Map.Entry) o;
                     tokens.add(pair.getKey().toString());
                 }
                 if (tokens.size() > 0) {

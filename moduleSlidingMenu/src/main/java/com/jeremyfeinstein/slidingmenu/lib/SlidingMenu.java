@@ -2,7 +2,6 @@ package com.jeremyfeinstein.slidingmenu.lib;
 
 import java.lang.reflect.Method;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -95,7 +93,7 @@ public class SlidingMenu extends RelativeLayout {
         /**
          * On open.
          */
-        public void onOpen();
+        void onOpen();
     }
 
     /**
@@ -114,7 +112,7 @@ public class SlidingMenu extends RelativeLayout {
         /**
          * On opened.
          */
-        public void onOpened();
+        void onOpened();
     }
 
     /**
@@ -133,7 +131,7 @@ public class SlidingMenu extends RelativeLayout {
         /**
          * On close.
          */
-        public void onClose();
+        void onClose();
     }
 
     /**
@@ -152,7 +150,7 @@ public class SlidingMenu extends RelativeLayout {
         /**
          * On closed.
          */
-        public void onClosed();
+        void onClosed();
     }
 
     /**
@@ -166,7 +164,7 @@ public class SlidingMenu extends RelativeLayout {
          * @param canvas      the canvas
          * @param percentOpen the percent open
          */
-        public void transformCanvas(Canvas canvas, float percentOpen);
+        void transformCanvas(Canvas canvas, float percentOpen);
     }
 
     /**
@@ -334,7 +332,7 @@ public class SlidingMenu extends RelativeLayout {
             case SLIDING_CONTENT:
                 mActionbarOverlay = actionbarOverlay;
                 // take the above view out of
-                ViewGroup contentParent = (ViewGroup) activity.findViewById(android.R.id.content);
+                ViewGroup contentParent = activity.findViewById(android.R.id.content);
                 View content = contentParent.getChildAt(0);
                 contentParent.removeView(content);
                 contentParent.addView(this);
@@ -1006,7 +1004,6 @@ public class SlidingMenu extends RelativeLayout {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void manageLayers(float percentOpen) {
-        if (Build.VERSION.SDK_INT < 11) return;
 
         boolean layer = percentOpen > 0.0f && percentOpen < 1.0f;
         final int layerType = layer ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_NONE;

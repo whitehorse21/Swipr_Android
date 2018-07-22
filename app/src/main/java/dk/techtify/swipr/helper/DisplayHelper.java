@@ -96,6 +96,7 @@ public class DisplayHelper {
         int[] textSizeAttr = new int[]{android.R.attr.actionBarSize, R.attr.actionBarSize};
         TypedArray a = context.obtainStyledAttributes(new TypedValue().data, textSizeAttr);
         float heightMaterial = a.getDimension(1, -1);
+        a.recycle();
         return (int) heightMaterial;
     }
 

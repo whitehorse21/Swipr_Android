@@ -42,12 +42,9 @@ public class AboutFragment extends Fragment implements YouTubePlayer.OnInitializ
         getChildFragmentManager().beginTransaction().replace(R.id.video, mYouTubePlayer).commitAllowingStateLoss();
         initializePlayer();
 
-        view.findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).goOffline();
-                IntentHelper.logOut(getActivity());
-            }
+        view.findViewById(R.id.logout).setOnClickListener(view1 -> {
+            ((MainActivity) getActivity()).goOffline();
+            IntentHelper.logOut(getActivity());
         });
 
         return view;

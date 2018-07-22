@@ -1,8 +1,5 @@
 package dk.techtify.swipr;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Pavel on 12/12/2016.
  */
