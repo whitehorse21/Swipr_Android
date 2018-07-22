@@ -50,7 +50,6 @@ public class StoreFragment extends Fragment implements ActionView.ActionClickLis
         mIsPlusMember = User.getLocalUser().getEmail() != null && User.getLocalUser().isPlusMember();
 
         ((MainActivity) getActivity()).setContainerTopMargin(false);
-        ((MainActivity) getActivity()).enableSideMenu(!mIsPlusMember);
         ((MainActivity) getActivity()).getActionView().setTitle("");
         ((MainActivity) getActivity()).getActionView().setActionButton(R.drawable.ic_filter, this);
         ((MainActivity) getActivity()).getActionView().setBackgroundColor(ContextCompat.getColor(
@@ -65,12 +64,8 @@ public class StoreFragment extends Fragment implements ActionView.ActionClickLis
         mForward = view.findViewById(R.id.forward);
 
         mBack.setOnClickListener(view12 -> {
-            if (mIsPlusMember) {
-                if (mItemPager.getCurrentItem() > 0) {
-                    mItemPager.setCurrentItem(mItemPager.getCurrentItem() - 1, true);
-                }
-            } else {
-                ((MainActivity) getActivity()).getPlusSlidingBar().toggle();
+            if (mItemPager.getCurrentItem() > 0) {
+                mItemPager.setCurrentItem(mItemPager.getCurrentItem() - 1, true);
             }
         });
 
@@ -85,7 +80,6 @@ public class StoreFragment extends Fragment implements ActionView.ActionClickLis
         }
 
         mItemPager = view.findViewById(R.id.pager);
-        mItemPager.setPlusMember(mIsPlusMember);
         mItemPager.setAdapter(mAdapter);
 
         final ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -180,7 +174,6 @@ public class StoreFragment extends Fragment implements ActionView.ActionClickLis
                 }
             }
         }
-        ((MainActivity) getActivity()).enableSideMenu(false);
         super.onDestroyView();
     }
 
@@ -191,8 +184,6 @@ public class StoreFragment extends Fragment implements ActionView.ActionClickLis
 
     public void setPlusMemberVisibility(boolean isPlus) {
         mIsPlusMember = isPlus;
-        ((MainActivity) getActivity()).enableSideMenu(!mIsPlusMember);
-        mItemPager.setPlusMember(mIsPlusMember);
     }
 
     private class InternetStatusReceiver extends BroadcastReceiver {

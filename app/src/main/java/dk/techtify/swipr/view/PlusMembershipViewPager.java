@@ -12,11 +12,7 @@ import android.view.MotionEvent;
 public class PlusMembershipViewPager extends ViewPager {
 
     private float mStartDragX, mLastDragX;
-    private boolean isForwardDirection = true, mIsPlusMember;
-
-    public void setPlusMember(boolean isPlusMember) {
-        mIsPlusMember = isPlusMember;
-    }
+    private boolean isForwardDirection = true, mIsPlusMember = true;
 
     public PlusMembershipViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);

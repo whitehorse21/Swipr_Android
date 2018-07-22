@@ -583,6 +583,7 @@ public class MainActivity extends BaseActivity implements SwiprPlusDialog.DealLi
         mSlidingMenu.setMode(SlidingMenu.LEFT);
         mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         mSlidingMenu.setFadeEnabled(false);
+        mSlidingMenu.setSlidingEnabled(false);
         View view = getLayoutInflater().inflate(R.layout.plus_side_menu_alert, null);
         view.setOnClickListener(v -> {
             mSlidingMenu.toggle(true);
